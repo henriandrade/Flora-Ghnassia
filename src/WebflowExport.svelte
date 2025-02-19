@@ -26,9 +26,11 @@
     });
   }
 
+  console.log("Svelte Exists");
   onMount(() => {
+    console.log("Mounted");
     whenDomIsReady(() => {
-      console.log("Webflow animations script initialized automatically!");
+      console.log("Dom is ready");
       webflowIsReady = true;
     });
   });
