@@ -1,9 +1,6 @@
 <svelte:options customElement="florag-webflow-animations" />
 
 <script lang="ts">
-  import HeroTextAnimation from "@/lib/HeroTextAnimation.svelte";
-  import HomeImagesParallaxEffect from "@/lib/HomeImagesParallaxEffect.svelte";
-  import MenuAnimation from "@/lib/MenuAnimation.svelte";
   import { onMount, tick } from "svelte";
 
   let webflowIsReady = false;
@@ -35,9 +32,3 @@
     });
   });
 </script>
-
-{#if webflowIsReady}
-  <HeroTextAnimation />
-  <HomeImagesParallaxEffect />
-  <MenuAnimation />
-{/if}
