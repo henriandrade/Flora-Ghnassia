@@ -1,3 +1,5 @@
+<svelte:options customElement="florag-webflow-animations" />
+
 <script lang="ts">
   import HeroTextAnimation from "@/lib/HeroTextAnimation.svelte";
   import HomeImagesParallaxEffect from "@/lib/HomeImagesParallaxEffect.svelte";
@@ -26,6 +28,7 @@
 
   onMount(() => {
     whenDomIsReady(() => {
+      console.log("Webflow animations script initialized automatically!");
       webflowIsReady = true;
     });
   });
