@@ -1,12 +1,11 @@
 <script lang="ts">
-  import "./webflow-style.css";
-  import WebflowIndex from "./webflow-index.svelte";
-  import WebflowAnimation from "./lib/webflow-animation.svelte";
+  import Webflow from "@public/webflow/index.html?raw";
+  import WebflowExport from "@/WebflowExport.svelte";
 </script>
 
 <main>
-  <WebflowIndex />
-  <WebflowAnimation />
+  {@html Webflow}
+  <WebflowExport />
 </main>
 
 <style>
