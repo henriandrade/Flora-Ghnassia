@@ -18,8 +18,7 @@ export default defineConfig({
       },
       output: {
         entryFileNames: 'florag-webflow-animation.js',
-      },
-      external: ['jquery'], // Exclude jQuery from the build
+      }
     },
   },
   assetsInclude: ['src/lib/webflow/index.html'],

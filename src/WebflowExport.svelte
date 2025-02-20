@@ -2,6 +2,8 @@
 
 <script lang="ts">
   import HeroTextAnimation from "@/lib/HeroTextAnimation.svelte";
+  import HomeImagesParallaxEffect from "@/lib/HomeImagesParallaxEffect.svelte";
+  import MenuAnimation from "@/lib/MenuAnimation.svelte";
   import { onMount, tick } from "svelte";
 
   let webflowIsReady = false;
@@ -36,4 +38,6 @@
 
 {#if webflowIsReady}
   <HeroTextAnimation />
+  <HomeImagesParallaxEffect />
+  <MenuAnimation />
 {/if}

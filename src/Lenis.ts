@@ -1,5 +1,4 @@
 import Lenis from "lenis";
-import $ from "jquery";
 import { readable } from "svelte/store";
 
 export const lenisController = readable<Lenis | null>(null, (set) => {
@@ -20,9 +19,7 @@ export const lenisController = readable<Lenis | null>(null, (set) => {
     lenis.stop();
 
     // Start lenis when document is ready
-    $(document).ready(() => {
-        lenis.start();
-    });
+    lenis.start();
 
     let resizeTimeout: NodeJS.Timeout;
     function refreshLenis() {
