@@ -48,7 +48,6 @@
         width: `calc(${wordWidths[index]}px + 1.15rem)`,
         height: `${wordHeights[index]}px`,
         duration: animationDuration * 0.8,
-        ease: "power2.inOut",
       });
     }
   };
