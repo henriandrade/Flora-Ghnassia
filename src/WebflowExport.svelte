@@ -26,11 +26,9 @@
     });
   }
 
-  console.log("Svelte exists");
   onMount(() => {
-    console.log("Mounted");
     whenDomIsReady(() => {
-      console.log("Dom is ready");
+      console.log("Webflow Custom Animations Loaded");
       webflowIsReady = true;
     });
   });
