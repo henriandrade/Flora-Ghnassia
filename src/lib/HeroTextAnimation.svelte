@@ -1,6 +1,6 @@
 <script lang="ts">
   import SplitType from "split-type";
-  import { gsap } from "gsap";
+  import gsap from "gsap";
   import { onMount } from "svelte";
 
   let words: NodeListOf<HTMLElement>;
@@ -48,6 +48,7 @@
         width: `calc(${wordWidths[index]}px + 1.15rem)`,
         height: `${wordHeights[index]}px`,
         duration: animationDuration * 0.8,
+        ease: "power2.inOut",
       });
     }
   };
