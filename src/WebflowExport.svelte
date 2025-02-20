@@ -4,7 +4,7 @@
   import HeroTextAnimation from "@/lib/HeroTextAnimation.svelte";
   import HomeImagesParallaxEffect from "@/lib/HomeImagesParallaxEffect.svelte";
   import MenuAnimation from "@/lib/MenuAnimation.svelte";
-  import { onMount, tick } from "svelte";
+  import { onMount } from "svelte";
 
   let webflowIsReady = false;
 
