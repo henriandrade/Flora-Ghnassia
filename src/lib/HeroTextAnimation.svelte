@@ -1,6 +1,6 @@
 <script lang="ts">
   import SplitType from "split-type";
-  import gsap from "gsap";
+  import { gsap } from "gsap";
   import { onMount } from "svelte";
 
   let words: NodeListOf<HTMLElement>;

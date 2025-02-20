@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import SplitType from "split-type";
-  import gsap from "gsap";
+  import { gsap } from "gsap";
 
   const setupMenuItem = (menuLink: HTMLElement) => {
     // Split text into characters
