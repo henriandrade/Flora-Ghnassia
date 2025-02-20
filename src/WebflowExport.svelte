@@ -1,6 +1,7 @@
 <svelte:options customElement="florag-webflow-animations" />
 
 <script lang="ts">
+  import HeroTextAnimation from "@/lib/HeroTextAnimation.svelte";
   import { onMount, tick } from "svelte";
 
   let webflowIsReady = false;
@@ -32,3 +33,7 @@
     });
   });
 </script>
+
+{#if webflowIsReady}
+  <HeroTextAnimation />
+{/if}
