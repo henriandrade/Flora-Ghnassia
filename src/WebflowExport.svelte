@@ -28,13 +28,14 @@
 
   onMount(() => {
     whenDomIsReady(() => {
-      console.log("Webflow Custom Animations Loaded v2");
+      console.log("Webflow Custom Animations Loaded v3");
       webflowIsReady = true;
     });
   });
 </script>
 
 {#if webflowIsReady}
+  <HeroTextAnimation />
   <HomeImagesParallaxEffect />
   <MenuAnimation />
 {/if}

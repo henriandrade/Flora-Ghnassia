@@ -18,7 +18,8 @@ export default defineConfig({
       },
       output: {
         entryFileNames: 'florag-webflow-animation.js',
-      }
+      },
+      external: ['gsap']
     },
   },
   assetsInclude: ['src/lib/webflow/index.html'],
