@@ -1,5 +1,4 @@
 <script lang="ts">
-  import confetti from "canvas-confetti";
   import { onMount } from "svelte";
   import SplitType from "split-type";
   import gsap from "gsap";
