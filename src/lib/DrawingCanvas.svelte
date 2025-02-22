@@ -1,4 +1,22 @@
 <script lang="ts">
+  import {
+    WebGLRenderer,
+    Scene,
+    OrthographicCamera,
+    WebGLRenderTarget,
+    Vector2,
+    Raycaster,
+    Color,
+    PlaneGeometry,
+    ShaderMaterial,
+    Mesh,
+    MeshBasicMaterial,
+    LinearFilter,
+    RGBAFormat,
+    NormalBlending,
+  } from "three";
+  import { onMount } from "svelte";
+
   const drawingVertexShader = `
     varying vec2 vUv;
     void main() {
@@ -116,24 +134,6 @@
       );
     }
   `;
-
-  import {
-    WebGLRenderer,
-    Scene,
-    OrthographicCamera,
-    WebGLRenderTarget,
-    Vector2,
-    Raycaster,
-    Color,
-    PlaneGeometry,
-    ShaderMaterial,
-    Mesh,
-    MeshBasicMaterial,
-    LinearFilter,
-    RGBAFormat,
-    NormalBlending,
-  } from "three";
-  import { onMount } from "svelte";
 
   let canvasElement: HTMLCanvasElement;
   let drawingCanvas: HTMLCanvasElement;
