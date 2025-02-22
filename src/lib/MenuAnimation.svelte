@@ -1,9 +1,8 @@
 <script lang="ts">
+  import confetti from "canvas-confetti";
   import { onMount } from "svelte";
   import SplitType from "split-type";
   import gsap from "gsap";
-  // @ts-ignore - Type definitions not available
-  import confetti from "canvas-confetti";
 
   const setupMenuItem = (menuLink: HTMLElement) => {
     // Split text into characters
