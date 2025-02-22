@@ -5,6 +5,7 @@
   import HeroTextAnimation from "@/lib/HeroTextAnimation.svelte";
   import HomeImagesParallaxEffect from "@/lib/HomeImagesParallaxEffect.svelte";
   import MenuAnimation from "@/lib/MenuAnimation.svelte";
+  import DrawingCanvas from "@/lib/DrawingCanvas.svelte";
 
   let webflowIsReady = false;
 
@@ -28,7 +29,7 @@
 
   onMount(() => {
     whenDomIsReady(() => {
-      console.log("Webflow Custom Animations Loaded v5");
+      console.log("Webflow Custom Animations Loaded v6");
       webflowIsReady = true;
     });
   });
@@ -38,4 +39,5 @@
   <HeroTextAnimation />
   <HomeImagesParallaxEffect />
   <MenuAnimation />
+  <DrawingCanvas />
 {/if}
