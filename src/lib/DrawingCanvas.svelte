@@ -1,19 +1,4 @@
 <script lang="ts">
-  import * as THREE from "three";
-  import { onMount } from "svelte";
-
-  let canvasElement: HTMLCanvasElement;
-  let drawingCanvas: HTMLCanvasElement;
-  let renderer: THREE.WebGLRenderer;
-  let scene: THREE.Scene;
-  let camera: THREE.OrthographicCamera;
-  let drawingTexture: THREE.WebGLRenderTarget;
-  let accumulationTexture: THREE.WebGLRenderTarget;
-  let lastPointerPosition = new THREE.Vector2();
-  let currentPointerPosition = new THREE.Vector2();
-  let raycaster = new THREE.Raycaster();
-  let pointer = new THREE.Vector2();
-
   const drawingVertexShader = `
     varying vec2 vUv;
     void main() {
@@ -132,7 +117,37 @@
     }
   `;
 
-  function getPointerPosition(event: PointerEvent): THREE.Vector2 {
+  import {
+    WebGLRenderer,
+    Scene,
+    OrthographicCamera,
+    WebGLRenderTarget,
+    Vector2,
+    Raycaster,
+    Color,
+    PlaneGeometry,
+    ShaderMaterial,
+    Mesh,
+    MeshBasicMaterial,
+    LinearFilter,
+    RGBAFormat,
+    NormalBlending,
+  } from "three";
+  import { onMount } from "svelte";
+
+  let canvasElement: HTMLCanvasElement;
+  let drawingCanvas: HTMLCanvasElement;
+  let renderer: WebGLRenderer;
+  let scene: Scene;
+  let camera: OrthographicCamera;
+  let drawingTexture: WebGLRenderTarget;
+  let accumulationTexture: WebGLRenderTarget;
+  let lastPointerPosition = new Vector2();
+  let currentPointerPosition = new Vector2();
+  let raycaster = new Raycaster();
+  let pointer = new Vector2();
+
+  function getPointerPosition(event: PointerEvent): Vector2 {
     const rect = drawingCanvas.getBoundingClientRect();
 
     // Calculate normalized coordinates (0 to 1)
@@ -151,16 +166,15 @@
       const uv = intersects[0].uv;
       if (uv) {
         // Return UV coordinates directly
-        return new THREE.Vector2(uv.x, uv.y);
+        return new Vector2(uv.x, uv.y);
       }
     }
 
-    return new THREE.Vector2(-100, -100); // Return off-screen if no intersection
+    return new Vector2(-100, -100); // Return off-screen if no intersection
   }
 
   function updateShaderUniforms() {
-    const material = (scene.children[0] as THREE.Mesh)
-      .material as THREE.ShaderMaterial;
+    const material = (scene.children[0] as Mesh).material as ShaderMaterial;
 
     material.uniforms.lastPosition.value.copy(lastPointerPosition);
     material.uniforms.pointerPosition.value.copy(currentPointerPosition);
@@ -179,14 +193,14 @@
       // Copy accumulation back to drawing texture
       renderer.setRenderTarget(drawingTexture);
       renderer.clear();
-      const tempScene = new THREE.Scene();
-      const tempCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-      const tempGeometry = new THREE.PlaneGeometry(2, 2);
-      const tempMaterial = new THREE.MeshBasicMaterial({
+      const tempScene = new Scene();
+      const tempCamera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
+      const tempGeometry = new PlaneGeometry(2, 2);
+      const tempMaterial = new MeshBasicMaterial({
         map: accumulationTexture.texture,
         transparent: true,
       });
-      const tempMesh = new THREE.Mesh(tempGeometry, tempMaterial);
+      const tempMesh = new Mesh(tempGeometry, tempMaterial);
       tempScene.add(tempMesh);
       renderer.render(tempScene, tempCamera);
 
@@ -210,8 +224,7 @@
   }
 
   function resetCanvas() {
-    const material = (scene.children[0] as THREE.Mesh)
-      .material as THREE.ShaderMaterial;
+    const material = (scene.children[0] as Mesh).material as ShaderMaterial;
 
     if (drawingTexture) {
       drawingTexture.dispose();
@@ -220,24 +233,24 @@
       accumulationTexture.dispose();
     }
 
-    drawingTexture = new THREE.WebGLRenderTarget(
+    drawingTexture = new WebGLRenderTarget(
       drawingCanvas.width,
       drawingCanvas.height,
       {
-        minFilter: THREE.LinearFilter,
-        magFilter: THREE.LinearFilter,
-        format: THREE.RGBAFormat,
+        minFilter: LinearFilter,
+        magFilter: LinearFilter,
+        format: RGBAFormat,
         stencilBuffer: false,
       }
     );
 
-    accumulationTexture = new THREE.WebGLRenderTarget(
+    accumulationTexture = new WebGLRenderTarget(
       drawingCanvas.width,
       drawingCanvas.height,
       {
-        minFilter: THREE.LinearFilter,
-        magFilter: THREE.LinearFilter,
-        format: THREE.RGBAFormat,
+        minFilter: LinearFilter,
+        magFilter: LinearFilter,
+        format: RGBAFormat,
         stencilBuffer: false,
       }
     );
@@ -274,14 +287,6 @@
 
     canvasElement.appendChild(drawingCanvas);
 
-    console.log("Canvas dimensions:", {
-      width: drawingCanvas.width,
-      height: drawingCanvas.height,
-      clientWidth: drawingCanvas.clientWidth,
-      clientHeight: drawingCanvas.clientHeight,
-      dpr,
-    });
-
     const downloadBtn = document.querySelector("#download-btn");
     const resetBtn = document.querySelector("#reset-btn");
 
@@ -294,7 +299,7 @@
     const computedStyle = window.getComputedStyle(canvasElement);
     const backgroundColor = computedStyle.backgroundColor;
 
-    renderer = new THREE.WebGLRenderer({
+    renderer = new WebGLRenderer({
       canvas: drawingCanvas,
       alpha: true,
       antialias: true,
@@ -311,16 +316,15 @@
     const rgb = backgroundColor.match(/\d+/g);
     if (rgb) {
       const [r, g, b] = rgb.map(Number);
-      renderer.setClearColor(new THREE.Color(r / 255, g / 255, b / 255), 1);
+      renderer.setClearColor(new Color(r / 255, g / 255, b / 255), 1);
     } else {
       renderer.setClearColor(0xffffff, 1); // Fallback to white
     }
 
-    scene = new THREE.Scene();
+    scene = new Scene();
 
     // Simple orthographic camera setup
-    const aspect = drawingCanvas.width / drawingCanvas.height;
-    camera = new THREE.OrthographicCamera(
+    camera = new OrthographicCamera(
       -1, // left
       1, // right
       1, // top
@@ -330,44 +334,42 @@
     );
     camera.position.z = 1;
 
-    drawingTexture = new THREE.WebGLRenderTarget(
+    drawingTexture = new WebGLRenderTarget(
       drawingCanvas.width,
       drawingCanvas.height,
       {
-        minFilter: THREE.LinearFilter,
-        magFilter: THREE.LinearFilter,
-        format: THREE.RGBAFormat,
+        minFilter: LinearFilter,
+        magFilter: LinearFilter,
+        format: RGBAFormat,
         stencilBuffer: false,
       }
     );
 
-    accumulationTexture = new THREE.WebGLRenderTarget(
+    accumulationTexture = new WebGLRenderTarget(
       drawingCanvas.width,
       drawingCanvas.height,
       {
-        minFilter: THREE.LinearFilter,
-        magFilter: THREE.LinearFilter,
-        format: THREE.RGBAFormat,
+        minFilter: LinearFilter,
+        magFilter: LinearFilter,
+        format: RGBAFormat,
         stencilBuffer: false,
       }
     );
 
-    const geometry = new THREE.PlaneGeometry(2, 2);
-    const material = new THREE.ShaderMaterial({
+    const geometry = new PlaneGeometry(2, 2);
+    const material = new ShaderMaterial({
       vertexShader: drawingVertexShader,
       fragmentShader: drawingFragmentShader,
       uniforms: {
         previousFrame: { value: drawingTexture.texture },
-        pointerPosition: { value: new THREE.Vector2() },
-        lastPosition: { value: new THREE.Vector2() },
+        pointerPosition: { value: new Vector2() },
+        lastPosition: { value: new Vector2() },
       },
       transparent: true,
-      blending: THREE.NormalBlending,
+      blending: NormalBlending,
     });
-    const plane = new THREE.Mesh(geometry, material);
+    const plane = new Mesh(geometry, material);
     scene.add(plane);
-
-    console.log("Scene setup complete");
 
     drawingCanvas.addEventListener("pointermove", draw);
     downloadBtn.addEventListener("click", downloadCanvas);
@@ -383,8 +385,6 @@
     }
     animate();
 
-    console.log("Animation loop started");
-
     function handleResize() {
       const dpr = window.devicePixelRatio || 1;
       const width = canvasElement.clientWidth;
@@ -395,8 +395,6 @@
       drawingCanvas.style.width = `${width}px`;
       drawingCanvas.style.height = `${height}px`;
 
-      // Update camera aspect ratio
-      const aspect = width / height;
       camera.left = -1;
       camera.right = 1;
       camera.top = 1;
@@ -407,19 +405,6 @@
       renderer.setPixelRatio(dpr);
       drawingTexture.setSize(width * dpr, height * dpr);
       accumulationTexture.setSize(width * dpr, height * dpr);
-
-      console.log("Resize:", {
-        width,
-        height,
-        dpr,
-        aspect,
-        camera: {
-          left: camera.left,
-          right: camera.right,
-          top: camera.top,
-          bottom: camera.bottom,
-        },
-      });
     }
 
     window.addEventListener("resize", handleResize);
