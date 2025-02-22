@@ -19,6 +19,7 @@ export default defineConfig({
       output: {
         entryFileNames: 'florag-webflow-animation.js',
       },
+      external: ['canvas-confetti'],
     },
   },
   assetsInclude: ['src/lib/webflow/index.html'],
