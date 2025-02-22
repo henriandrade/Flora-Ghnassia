@@ -1,6 +1,7 @@
 <svelte:options customElement="florag-webflow-animations" />
 
 <script lang="ts">
+  import DrawingCanvas from "@/lib/DrawingCanvas.svelte";
   import HeroTextAnimation from "@/lib/HeroTextAnimation.svelte";
   import HomeImagesParallaxEffect from "@/lib/HomeImagesParallaxEffect.svelte";
   import MenuAnimation from "@/lib/MenuAnimation.svelte";
@@ -38,4 +39,5 @@
   <HeroTextAnimation />
   <HomeImagesParallaxEffect />
   <MenuAnimation />
+  <DrawingCanvas />
 {/if}

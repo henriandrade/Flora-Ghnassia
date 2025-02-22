@@ -2,6 +2,8 @@
   import { onMount } from "svelte";
   import SplitType from "split-type";
   import gsap from "gsap";
+  // @ts-ignore - Type definitions not available
+  import confetti from "canvas-confetti";
 
   const setupMenuItem = (menuLink: HTMLElement) => {
     // Split text into characters
@@ -60,6 +62,23 @@
         stagger: 0.01,
         ease: "power2.out",
       });
+
+      // Fire confetti if this is the #fun menu item
+      if (menuLink.id === "fun") {
+        // Get menu link position relative to viewport
+        const rect = menuLink.getBoundingClientRect();
+        const x = (rect.left + rect.width * 0.65) / window.innerWidth; // Center horizontally
+        const y = (rect.top + rect.height * 0.25) / window.innerHeight; // Center vertically
+
+        confetti({
+          particleCount: 100,
+          spread: 180,
+          origin: { x, y },
+          angle: -90, // Point downward
+          gravity: 0.5,
+          startVelocity: 20,
+        });
+      }
     });
 
     menuLink.addEventListener("mouseleave", () => {
