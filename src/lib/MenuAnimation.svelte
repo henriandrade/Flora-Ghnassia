@@ -19,86 +19,48 @@
       .querySelector(".word")!
       .cloneNode(true) as HTMLElement;
     wordClone.style.position = "absolute";
-    wordClone.style.transform = "translateY(120%)";
+    wordClone.style.transform = "translateY(125%)";
     wordClone.classList.add("clone");
     menuItem.appendChild(wordClone);
-
-    // Create underline element
-    const underline = document.createElement("div");
-    underline.style.position = "absolute";
-    underline.style.marginTop = "1.5rem";
-    underline.style.width = "100%";
-    underline.style.height = "0.15rem";
-    underline.style.backgroundColor = "white";
-    underline.style.transformOrigin = "left";
-    underline.style.transform = "scaleX(0)";
-    menuLink.style.position = "relative";
-    menuItem.appendChild(underline);
 
     // Get all chars from original and clone
     const originalChars = menuLink.querySelectorAll(".char");
     const cloneChars = wordClone.querySelectorAll(".char");
 
+    // Create a timeline for animations
+    const tl = gsap.timeline({ paused: true });
+
+    // Add animations to the timeline
+    tl.to(
+      originalChars,
+      {
+        yPercent: -125,
+        duration: 0.8,
+        stagger: 0.06,
+        ease: "power2.out",
+      },
+      0
+    );
+
+    tl.to(
+      cloneChars,
+      {
+        yPercent: -125,
+        duration: 0.8,
+        stagger: 0.06,
+        ease: "power2.out",
+      },
+      0
+    );
+
     // Setup hover animations
     menuLink.addEventListener("mouseenter", () => {
-      gsap.to(underline, {
-        scaleX: 1,
-        duration: 0.2,
-        ease: "power2.out",
-      });
-
-      gsap.to(originalChars, {
-        yPercent: -120,
-        duration: 0.3,
-        stagger: 0.01,
-        ease: "power2.out",
-      });
-
-      gsap.to(cloneChars, {
-        yPercent: -120,
-        duration: 0.3,
-        stagger: 0.01,
-        ease: "power2.out",
-      });
-
-      // Fire confetti if this is the #fun menu item
-      if (menuLink.id === "fun") {
-        // Get menu link position relative to viewport
-        const rect = menuLink.getBoundingClientRect();
-        const x = (rect.left + rect.width * 0.65) / window.innerWidth; // Center horizontally
-        const y = (rect.top + rect.height * 0.25) / window.innerHeight; // Center vertically
-
-        confetti({
-          particleCount: 100,
-          spread: 180,
-          origin: { x, y },
-          angle: -90, // Point downward
-          gravity: 0.5,
-          startVelocity: 20,
-        });
-      }
+      tl.timeScale(1);
+      tl.play();
     });
-
     menuLink.addEventListener("mouseleave", () => {
-      gsap.to(underline, {
-        scaleX: 0,
-        duration: 0.3,
-        ease: "power2.out",
-      });
-
-      gsap.to(originalChars, {
-        yPercent: 0,
-        duration: 0.4,
-        stagger: 0.01,
-        ease: "power2.out",
-      });
-
-      gsap.to(cloneChars, {
-        yPercent: 0,
-        duration: 0.4,
-        stagger: 0.01,
-        ease: "power2.out",
-      });
+      tl.timeScale(2);
+      tl.reverse();
     });
   };
 
