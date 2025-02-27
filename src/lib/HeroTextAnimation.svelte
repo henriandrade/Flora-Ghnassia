@@ -24,7 +24,7 @@
       duration: 5,
       ease: "power4.out",
       stagger: {
-        amount: 0.6,
+        amount: 0.8,
         ease: "power2.inOut",
       },
     });
@@ -38,7 +38,7 @@
         duration: 5,
         ease: "power4.out",
         stagger: {
-          amount: 0.6,
+          amount: 0.8,
           ease: "power1.out",
         },
       },
@@ -73,6 +73,53 @@
         // Add mouse leave event
         char.addEventListener("mouseleave", resetCharPosition);
       });
+    });
+
+    const textElementsToAnimate = document.querySelectorAll(
+      "[animate-text-duration]"
+    ) as NodeListOf<HTMLElement>;
+
+    textElementsToAnimate.forEach((textElement) => {
+      const duration = parseFloat(
+        textElement.getAttribute("animate-text-duration") || "1"
+      );
+
+      // Check if there's a delay attribute
+      const delay = parseFloat(
+        textElement.getAttribute("animate-delay") || "0"
+      );
+
+      // Split text by lines
+      const splitText = new SplitType(textElement, { types: "lines" });
+
+      // Add overflow hidden to each line element
+      if (splitText.lines) {
+        splitText.lines.forEach((line) => {
+          // Set overflow hidden on the line element
+          line.style.overflow = "hidden";
+
+          // Create a container for the content to animate
+          const contentWrapper = document.createElement("div");
+          contentWrapper.innerHTML = line.innerHTML;
+          contentWrapper.style.display = "block";
+
+          // Clear original content and append the wrapper
+          line.innerHTML = "";
+          line.appendChild(contentWrapper);
+
+          // Animate the content wrapper
+          gsap.fromTo(
+            contentWrapper,
+            { y: "150%" },
+            {
+              y: "0%",
+              duration: duration,
+              delay: delay,
+              ease: "power3.out",
+            }
+          );
+        });
+      }
     });
   });
 </script>
