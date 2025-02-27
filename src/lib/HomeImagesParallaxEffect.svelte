@@ -33,7 +33,8 @@
       const image = container.querySelector(
         ".home-project-image.original"
       ) as HTMLImageElement;
-      image.style.zIndex = "100";
+      image.style.zIndex = "1000";
+      image.style.transform = "translateZ(100%)";
 
       let numberOfCopies = 8;
 
@@ -65,10 +66,11 @@
         element.style.opacity = `${opacity}`;
         const translateX = `-${translate * 1.25 + ((transformIndex * transformIndex) / 2 || 0) * 0.1}rem`;
         const translateY = `${translate * 2}rem`;
+        const translateZ = `${element.classList.contains("original") ? "10%" : "0"}`;
         const factor = transformIndex;
         const parallaxY = `calc(var(--scroll-velocity)*${factor}*0.05rem)`;
 
-        element.style.transform = `${rotationTransform} translateY(${parallaxY}) translateX(${translateX}) translateY(${translateY})`;
+        element.style.transform = `${rotationTransform} translateY(${parallaxY}) translate3d(${translateX}, ${translateY}, ${translateZ})`;
       };
 
       for (let [index, img] of clones.reverse().entries()) {
@@ -84,6 +86,7 @@
         );
         applyStyles(img, { opacity, translate, transformIndex: index + 1 });
       }
+
       applyStyles(image, { opacity: 1, translate: 0, transformIndex: 0 });
     }
   });

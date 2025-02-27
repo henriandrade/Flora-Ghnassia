@@ -94,8 +94,8 @@
 
       // Add overflow hidden to each line element
       if (splitText.lines) {
+        // Set overflow hidden on all line elements
         splitText.lines.forEach((line) => {
-          // Set overflow hidden on the line element
           line.style.overflow = "hidden";
 
           // Create a container for the content to animate
@@ -106,19 +106,20 @@
           // Clear original content and append the wrapper
           line.innerHTML = "";
           line.appendChild(contentWrapper);
-
-          // Animate the content wrapper
-          gsap.fromTo(
-            contentWrapper,
-            { y: "150%" },
-            {
-              y: "0%",
-              duration: duration,
-              delay: delay,
-              ease: "power3.out",
-            }
-          );
         });
+
+        // Animate all content wrappers with staggered timing
+        gsap.fromTo(
+          splitText.lines.map((line) => line.firstChild),
+          { y: "150%" },
+          {
+            y: "0%",
+            duration: duration,
+            delay: delay,
+            stagger: 0.1, // Add stagger effect between lines
+            ease: "power3.out",
+          }
+        );
       }
     });
   });
