@@ -22,7 +22,7 @@ export default defineConfig(({ command }) => {
         entry: path.resolve(__dirname, 'src/main.ts'),
         name: 'FloragComponents',
         fileName: 'florag-webflow-animation',
-        formats: ['umd'], // Specify UMD format for browser compatibility
+        formats: ['es', 'umd'], // Add ES module format
       } : undefined,
       rollupOptions: {
         // Make sure to externalize deps that shouldn't be bundled
@@ -33,6 +33,9 @@ export default defineConfig(({ command }) => {
           globals: {
             svelte: 'Svelte',
           },
+          // Set correct MIME type for UMD bundle
+          format: 'umd',
+          entryFileNames: `florag-webflow-animation.js`,
         },
       },
     },
