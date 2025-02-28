@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Webflow Integration Example</title>
+
+    <!-- Include your compiled script as a regular script (not a module) -->
+    <script src="https://your-hosting-url.com/florag-webflow-animation.umd.js"></script>
+  </head>
+  <body>
+    <!-- 
+    After the script loads, you can use your custom element anywhere in the page.
+    The name of the custom element is defined in the <svelte:options> tag in your component.
+  -->
+    <florag-webflow-animations></florag-webflow-animations>
+
+    <!-- 
+    You can also access your components programmatically through the global variable:
+    
+    <script>
+      // Access your components through the global variable
+      console.log(FloragComponents);
+      
+      // You could also create elements programmatically if needed
+      // const element = document.createElement('florag-webflow-animations');
+      // document.body.appendChild(element);
+    </script>
+  --></body>
+</html>

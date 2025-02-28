@@ -22,7 +22,19 @@ export default defineConfig(({ command }) => {
         entry: path.resolve(__dirname, 'src/main.ts'),
         name: 'FloragComponents',
         fileName: 'florag-webflow-animation',
+        formats: ['umd'], // Specify UMD format for browser compatibility
       } : undefined,
+      rollupOptions: {
+        // Make sure to externalize deps that shouldn't be bundled
+        // into your library
+        external: ['svelte'],
+        output: {
+          // Provide globals for external packages
+          globals: {
+            svelte: 'Svelte',
+          },
+        },
+      },
     },
     assetsInclude: ['src/lib/webflow/index.html'],
     resolve: {
