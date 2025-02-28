@@ -6,6 +6,8 @@
   import HomeImagesParallaxEffect from "@/lib/HomeImagesParallaxEffect.svelte";
   import MenuAnimation from "@/lib/MenuAnimation.svelte";
   import DrawingCanvas from "@/lib/DrawingCanvas.svelte";
+  import gsap from "gsap";
+  import ScrollTrigger from "gsap/ScrollTrigger";
 
   let webflowIsReady = false;
 
@@ -28,6 +30,7 @@
   }
 
   onMount(() => {
+    gsap.registerPlugin(ScrollTrigger);
     whenDomIsReady(() => {
       console.log("Webflow Custom Animations Loaded v6");
       webflowIsReady = true;

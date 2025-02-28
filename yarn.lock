@@ -281,6 +281,36 @@
     magic-string "^0.30.15"
     vitefu "^1.0.4"
 
+"@threejs-kit/instanced-sprite-mesh@^2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@threejs-kit/instanced-sprite-mesh/-/instanced-sprite-mesh-2.5.0.tgz#24b2718d39da17eada1bde2d5c0c0faeccdb7fb1"
+  integrity sha512-W4cRK7f1o15GtacvLi8h1022ySiMM5218eZJQYWHbVGKqpRezmj8hscdzgp4JFSCkRoAIdyIdLZg5U0Mtmcu/w==
+  dependencies:
+    diet-sprite "^0.0.1"
+    earcut "^2.2.4"
+    maath "^0.10.7"
+    three-instanced-uniforms-mesh "^0.52.0"
+    troika-three-utils "^0.52.0"
+
+"@threlte/core@^8.0.1":
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/@threlte/core/-/core-8.0.1.tgz#c21cce4556dd96a54f883dc24f6811fa8a49e6ef"
+  integrity sha512-vy1xRQppJFNmfPTeiRQue+KmYFsbPgVhwuYXRTvVrwPeD2oYz43gxUeOpe1FACeGKxrxZykeKJF5ebVvl7gBxw==
+  dependencies:
+    mitt "^3.0.1"
+
+"@threlte/extras@^9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@threlte/extras/-/extras-9.0.1.tgz#fc60b9a1cd7a8b8115a0c53d5ef6145341947213"
+  integrity sha512-xI0s5a/9NdBbUSaYCnTHfnVl44kZQUTuTPfzwv4gmMM2r2HewM5QsMDBBwBTcuVcYqkM9aUKl+5MWa20LnH/mg==
+  dependencies:
+    "@threejs-kit/instanced-sprite-mesh" "^2.5.0"
+    camera-controls "^2.9.0"
+    three-mesh-bvh "^0.7.4"
+    three-perf "github:jerzakm/three-perf#three-kit-threlte-fork"
+    three-viewport-gizmo "^2.0.2"
+    troika-three-text "^0.50.3"
+
 "@tsconfig/svelte@^5.0.4":
   version "5.0.4"
   resolved "https://registry.npmjs.org/@tsconfig/svelte/-/svelte-5.0.4.tgz"
@@ -308,10 +338,10 @@
   resolved "https://registry.npmjs.org/@types/stats.js/-/stats.js-0.17.3.tgz"
   integrity sha512-pXNfAD3KHOdif9EQXZ9deK82HVNaXP5ZIF5RP2QG6OQFNTaY2YIetfrE9t528vEreGQvEPRDDc8muaoYeK0SxQ==
 
-"@types/three@^0.173.0":
-  version "0.173.0"
-  resolved "https://registry.npmjs.org/@types/three/-/three-0.173.0.tgz"
-  integrity sha512-KtNjfI/CRB6JVKIVeZM1R3GYDX2wkoV2itNcQu2j4d7qkhjGOuB+s2oF6jl9mztycDLGMtrAnJQYxInC8Bb20A==
+"@types/three@^0.174.0":
+  version "0.174.0"
+  resolved "https://registry.yarnpkg.com/@types/three/-/three-0.174.0.tgz#994787330a9f6502d37c8783578d2180d89bc406"
+  integrity sha512-De/+vZnfg2aVWNiuy1Ldu+n2ydgw1osinmiZTAn0necE++eOfsygL8JpZgFjR2uHmAPo89MkxBj3JJ+2BMe+Uw==
   dependencies:
     "@tweenjs/tween.js" "~23.1.3"
     "@types/stats.js" "*"
@@ -350,6 +380,18 @@ axobject-query@^4.1.0:
   resolved "https://registry.npmjs.org/axobject-query/-/axobject-query-4.1.0.tgz"
   integrity sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==
 
+bidi-js@^1.0.2:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/bidi-js/-/bidi-js-1.0.3.tgz#6f8bcf3c877c4d9220ddf49b9bb6930c88f877d2"
+  integrity sha512-RKshQI1R3YQ+n9YJz2QQ147P66ELpa1FQEg20Dk8oW9t2KgLbpDLLp9aGZ7y8WHSshDknG0bknqGw5/tyCs5tw==
+  dependencies:
+    require-from-string "^2.0.2"
+
+camera-controls@^2.9.0:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/camera-controls/-/camera-controls-2.10.0.tgz#d3da9ba4d0ae0b67104b051e27ef0670000498d9"
+  integrity sha512-vBQ5Daxv4KRsn07U/VqkPxoqD8U+S++0oq5NLf4HevMuh/BDta3rg49e/P564AMzFPBePQeXDKOkiIezRgyDwg==
+
 canvas-confetti@^1.9.3:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/canvas-confetti/-/canvas-confetti-1.9.3.tgz#ef4c857420ad8045ab4abe8547261c8cdf229845"
@@ -378,6 +420,16 @@ deepmerge@^4.3.1:
   version "4.3.1"
   resolved "https://registry.npmjs.org/deepmerge/-/deepmerge-4.3.1.tgz"
   integrity sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==
+
+diet-sprite@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/diet-sprite/-/diet-sprite-0.0.1.tgz#36bb48bbc2b6d231e8c53c93076eafd3040a78f6"
+  integrity sha512-zSHI2WDAn1wJqJYxcmjWfJv3Iw8oL9reQIbEyx2x2/EZ4/qmUTIo8/5qOCurnAcq61EwtJJaZ0XTy2NRYqpB5A==
+
+earcut@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/earcut/-/earcut-2.2.4.tgz#6d02fd4d68160c114825d06890a92ecaae60343a"
+  integrity sha512-/pjZsA1b4RPHbeWZQn66SWS8nZZWLQQ23oE3Eam7aroEFGEvwKAsJfZ9ytiEMycfzXWpca4FA9QIOehf7PocBQ==
 
 esbuild@^0.24.2:
   version "0.24.2"
@@ -464,6 +516,11 @@ locate-character@^3.0.0:
   resolved "https://registry.npmjs.org/locate-character/-/locate-character-3.0.0.tgz"
   integrity sha512-SW13ws7BjaeJ6p7Q6CO2nchbYEc3X3J6WrmTTDto7yMPqVSZTUyY5Tjbid+Ab8gLnATtygYtiDIJGQRRn2ZOiA==
 
+maath@^0.10.7:
+  version "0.10.8"
+  resolved "https://registry.yarnpkg.com/maath/-/maath-0.10.8.tgz#cf647544430141bf6982da6e878abb6c4b804e24"
+  integrity sha512-tRvbDF0Pgqz+9XUa4jjfgAQ8/aPKmQdWXilFu2tMy4GWj4NOsx99HlULO4IeREfbO3a0sA145DZYyvXPkybm0g==
+
 magic-string@^0.30.11, magic-string@^0.30.15:
   version "0.30.17"
   resolved "https://registry.npmjs.org/magic-string/-/magic-string-0.30.17.tgz"
@@ -475,6 +532,11 @@ meshoptimizer@~0.18.1:
   version "0.18.1"
   resolved "https://registry.npmjs.org/meshoptimizer/-/meshoptimizer-0.18.1.tgz"
   integrity sha512-ZhoIoL7TNV4s5B6+rx5mC//fw8/POGyNxS/DZyCJeiZ12ScLfVwRE/GfsxwiTkMYYD5DmK2/JXnEVXqL4rF+Sw==
+
+mitt@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/mitt/-/mitt-3.0.1.tgz#ea36cf0cc30403601ae074c8f77b7092cdab36d1"
+  integrity sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==
 
 mri@^1.1.0:
   version "1.2.0"
@@ -509,6 +571,11 @@ readdirp@^4.0.1:
   version "4.1.1"
   resolved "https://registry.npmjs.org/readdirp/-/readdirp-4.1.1.tgz"
   integrity sha512-h80JrZu/MHUZCyHu5ciuoI0+WxsCxzxJTILn6Fs8rxSnFPh+UVHYfeIxK1nVGugMqkfC4vJcBOYbkfkwYK0+gw==
+
+require-from-string@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/require-from-string/-/require-from-string-2.0.2.tgz#89a7fdd938261267318eafe14f9c32e598c36909"
+  integrity sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==
 
 rollup@^4.30.1:
   version "4.34.6"
@@ -586,10 +653,79 @@ svelte@^5.19.6:
     magic-string "^0.30.11"
     zimmerframe "^1.1.2"
 
-three@^0.173.0:
-  version "0.173.0"
-  resolved "https://registry.npmjs.org/three/-/three-0.173.0.tgz"
-  integrity sha512-AUwVmViIEUgBwxJJ7stnF0NkPpZxx1aZ6WiAbQ/Qq61h6I9UR4grXtZDmO8mnlaNORhHnIBlXJ1uBxILEKuVyw==
+three-instanced-uniforms-mesh@^0.52.0:
+  version "0.52.0"
+  resolved "https://registry.yarnpkg.com/three-instanced-uniforms-mesh/-/three-instanced-uniforms-mesh-0.52.0.tgz#b4fca43522560dc3c8d60bde8d77d097a9325221"
+  integrity sha512-YuJigan74qBmt2X8XX4DCxGl42GQXQZWSyy8jos1kqjPyzR7IVl9Jk4HvOGEzb5pI7phVcaArImhaW2FZH3zpA==
+  dependencies:
+    troika-three-utils "^0.52.0"
+
+three-mesh-bvh@^0.7.4:
+  version "0.7.8"
+  resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.7.8.tgz#83156e4d3945734db076de1c94809331481b3fdd"
+  integrity sha512-BGEZTOIC14U0XIRw3tO4jY7IjP7n7v24nv9JXS1CyeVRWOCkcOMhRnmENUjuV39gktAw4Ofhr0OvIAiTspQrrw==
+
+"three-perf@github:jerzakm/three-perf#three-kit-threlte-fork":
+  version "1.0.10"
+  resolved "https://codeload.github.com/jerzakm/three-perf/tar.gz/322d7d38a17069f2b6e9734913edad0fc4a29169"
+  dependencies:
+    troika-three-text "^0.52.0"
+    tweakpane "^3.1.10"
+
+three-viewport-gizmo@^2.0.2:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/three-viewport-gizmo/-/three-viewport-gizmo-2.1.1.tgz#8846e1b5e12e3ecef5fb7d394e959972232f63a3"
+  integrity sha512-u+tv4DL7O7GqcF2l5xt2fiSZhKifAFOJ1UZI3vPy7W6ZiZaRjNgi/W4v783VK6s+85PP5kCFOrSg1Qn9jm/4zQ==
+
+three@^0.174.0:
+  version "0.174.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.174.0.tgz#53f46d6fd27515231b2af321f798f1e0ecf3f905"
+  integrity sha512-p+WG3W6Ov74alh3geCMkGK9NWuT62ee21cV3jEnun201zodVF4tCE5aZa2U122/mkLRmhJJUQmLLW1BH00uQJQ==
+
+troika-three-text@^0.50.3:
+  version "0.50.3"
+  resolved "https://registry.yarnpkg.com/troika-three-text/-/troika-three-text-0.50.3.tgz#666cb2de2dc7c28f3b199f034d81d815311c9607"
+  integrity sha512-UzbIrgV3fOFmFbFfWIBcBEXEyQovs+LLu15E5xGpSQbo1oZH49A+J9bul4H8H0xLtaLkRTO+LqEsmkaeDtZQfg==
+  dependencies:
+    bidi-js "^1.0.2"
+    troika-three-utils "^0.50.3"
+    troika-worker-utils "^0.50.0"
+    webgl-sdf-generator "1.1.1"
+
+troika-three-text@^0.52.0:
+  version "0.52.3"
+  resolved "https://registry.yarnpkg.com/troika-three-text/-/troika-three-text-0.52.3.tgz#38fe68a9642aba562830323dee6708710cf36a61"
+  integrity sha512-jLhiwgV8kEkwWjvK12f2fHVpbOC75p7SgPQ0cgcz+IMtN5Bdyg4EuFdwuTOVu9ga8UeYdKBpzd1AxviyixtYTQ==
+  dependencies:
+    bidi-js "^1.0.2"
+    troika-three-utils "^0.52.0"
+    troika-worker-utils "^0.52.0"
+    webgl-sdf-generator "1.1.1"
+
+troika-three-utils@^0.50.3:
+  version "0.50.3"
+  resolved "https://registry.yarnpkg.com/troika-three-utils/-/troika-three-utils-0.50.3.tgz#1fb25a616b5b624defe0e8de93dc537ad369b8c2"
+  integrity sha512-asQWCESikU58y9cz4OgIjCRlITkDTwf7ds8T9IyWxn7OB2A7XItg2UbHjfexwooTefM+BYbEC4ZKxOUBfbNVLA==
+
+troika-three-utils@^0.52.0:
+  version "0.52.0"
+  resolved "https://registry.yarnpkg.com/troika-three-utils/-/troika-three-utils-0.52.0.tgz#54f6fafcef58901bddd5749dee0ab0ddd09f1179"
+  integrity sha512-00oxqIIehtEKInOTQekgyknBuRUj1POfOUE2q1OmL+Xlpp4gIu+S0oA0schTyXsDS4d9DkR04iqCdD40rF5R6w==
+
+troika-worker-utils@^0.50.0:
+  version "0.50.0"
+  resolved "https://registry.yarnpkg.com/troika-worker-utils/-/troika-worker-utils-0.50.0.tgz#044b106df92685499553eff1198d133fd2e0c010"
+  integrity sha512-BxNk0w6+d9NYd7El/3RzlzH/F2vovJI1FX9Zb+D7fArVM1EsUXj6+wVwJSrfucy6/HYhfbZPu/lD6Miiw9Byiw==
+
+troika-worker-utils@^0.52.0:
+  version "0.52.0"
+  resolved "https://registry.yarnpkg.com/troika-worker-utils/-/troika-worker-utils-0.52.0.tgz#ba5525fc444345006ebab0bc9cabdd66f1561e66"
+  integrity sha512-W1CpvTHykaPH5brv5VHLfQo9D1OYuo0cSBEUQFFT/nBUzM8iD6Lq2/tgG/f1OelbAS1WtaTPQzE5uM49egnngw==
+
+tweakpane@^3.1.10:
+  version "3.1.10"
+  resolved "https://registry.yarnpkg.com/tweakpane/-/tweakpane-3.1.10.tgz#d2e11a3ee668017f7572ce53417f06eed41f5ab8"
+  integrity sha512-rqwnl/pUa7+inhI2E9ayGTqqP0EPOOn/wVvSWjZsRbZUItzNShny7pzwL3hVlaN4m9t/aZhsP0aFQ9U5VVR2VQ==
 
 typescript@~5.7.2:
   version "5.7.3"
@@ -616,6 +752,11 @@ vitefu@^1.0.4:
   version "1.0.5"
   resolved "https://registry.npmjs.org/vitefu/-/vitefu-1.0.5.tgz"
   integrity sha512-h4Vflt9gxODPFNGPwp4zAMZRpZR7eslzwH2c5hn5kNZ5rhnKyRJ50U+yGCdc2IRaBs8O4haIgLNGrV5CrpMsCA==
+
+webgl-sdf-generator@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/webgl-sdf-generator/-/webgl-sdf-generator-1.1.1.tgz#3e1b422b3d87cd3cc77f2602c9db63bc0f6accbd"
+  integrity sha512-9Z0JcMTFxeE+b2x1LJTdnaT8rT8aEp7MVxkNwoycNmJWwPdzoXzMh0BjJSh/AEFP+KPYZUli814h8bJZFIZ2jA==
 
 zimmerframe@^1.1.2:
   version "1.1.2"

@@ -13,17 +13,19 @@
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tsconfig/svelte": "^5.0.4",
     "@types/node": "^22.13.4",
-    "@types/three": "^0.173.0",
+    "@types/three": "^0.174.0",
     "svelte": "^5.19.6",
     "svelte-check": "^4.1.4",
     "typescript": "~5.7.2",
     "vite": "^6.1.0"
   },
   "dependencies": {
+    "@threlte/core": "^8.0.1",
+    "@threlte/extras": "^9.0.1",
     "canvas-confetti": "^1.9.3",
     "gsap": "^3.12.7",
     "lenis": "^1.1.20",
     "split-type": "^0.3.4",
-    "three": "^0.173.0"
+    "three": "^0.174.0"
   }
 }

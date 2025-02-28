@@ -108,7 +108,7 @@
           line.appendChild(contentWrapper);
         });
 
-        // Animate all content wrappers with staggered timing
+        // Animate all content wrappers with staggered timing using ScrollTrigger
         gsap.fromTo(
           splitText.lines.map((line) => line.firstChild),
           { y: "150%" },
@@ -118,6 +118,11 @@
             delay: delay,
             stagger: 0.1, // Add stagger effect between lines
             ease: "power3.out",
+            scrollTrigger: {
+              trigger: textElement,
+              start: "top bottom-=100",
+              toggleActions: "play none none none",
+            },
           }
         );
       }
