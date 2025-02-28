@@ -34,8 +34,7 @@ export default defineConfig(({ command }) => {
             svelte: 'Svelte',
           },
           // Set correct MIME type for UMD bundle
-          format: 'umd',
-          entryFileNames: `florag-webflow-animation.js`,
+          format: 'umd'
         },
       },
     },
