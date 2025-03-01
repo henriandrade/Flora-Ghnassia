@@ -9,6 +9,7 @@
   import gsap from "gsap";
   import ScrollTrigger from "gsap/ScrollTrigger";
   import WhatsNext from "@/lib/WhatsNext.svelte";
+  import HandleVideos from "@/lib/HandleVideos.svelte";
 
   let webflowIsReady = false;
 
@@ -45,4 +46,5 @@
   <MenuAnimation />
   <DrawingCanvas />
   <WhatsNext />
+  <HandleVideos />
 {/if}

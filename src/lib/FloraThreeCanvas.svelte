@@ -6,11 +6,12 @@
   import { onMount } from "svelte";
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
-  import { MathUtils, type Group, Vector3 } from "three";
+  import { MathUtils, type Group, Vector3, type Mesh } from "three";
 
   let container: HTMLDivElement;
   let aspect = 1;
   let group: Group;
+  let frameRef: Mesh;
 
   // Create a target vector for the camera to look at
   const cameraTarget = new Vector3(0, -200, 0);
@@ -25,6 +26,24 @@
         },
         {
           y: -60 * MathUtils.DEG2RAD,
+          scrollTrigger: {
+            trigger: container,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        }
+      );
+    }
+
+    if (frameRef) {
+      gsap.fromTo(
+        frameRef.rotation,
+        {
+          y: 60 * MathUtils.DEG2RAD,
+        },
+        {
+          y: -20 * MathUtils.DEG2RAD,
           scrollTrigger: {
             trigger: container,
             start: "top bottom",
@@ -94,7 +113,7 @@
             url="https://cdn.prod.website-files.com/67a0fb16e98014c2e8572448/67c0f92a0f6906a8aa87c079_flora-shadow.png"
           />
         </T.Mesh>
-        <T.Mesh name="flora-frame" position={[0, 2, -4]}>
+        <T.Mesh name="flora-frame" position={[0, 2, -4]} bind:ref={frameRef}>
           <T.PlaneGeometry args={[1.5, 3]} />
           <ImageMaterial
             side={2}
