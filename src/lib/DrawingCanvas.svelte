@@ -13,7 +13,7 @@
   const TAPER_LENGTH = 100; // Taper length in pixels
 
   // Maximum number of points to keep in history
-  const MAX_POINTS = 1000; // Keep more points to preserve the drawing
+  const MAX_POINTS = 4000; // Keep more points to preserve the drawing
 
   // Add smoothing for direction calculation
   let lastDx = 0;

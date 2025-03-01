@@ -8,6 +8,7 @@
   import DrawingCanvas from "@/lib/DrawingCanvas.svelte";
   import gsap from "gsap";
   import ScrollTrigger from "gsap/ScrollTrigger";
+  import WhatsNext from "@/lib/WhatsNext.svelte";
 
   let webflowIsReady = false;
 
@@ -43,4 +44,5 @@
   <HomeImagesParallaxEffect />
   <MenuAnimation />
   <DrawingCanvas />
+  <WhatsNext />
 {/if}
