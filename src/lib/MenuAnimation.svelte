@@ -15,17 +15,57 @@
     menuItem.style.overflow = "hidden";
     menuItem.style.height = "2rem";
 
-    const wordClone = menuLink
-      .querySelector(".word")!
-      .cloneNode(true) as HTMLElement;
-    wordClone.style.position = "absolute";
-    wordClone.style.transform = "translateY(125%)";
-    wordClone.classList.add("clone");
-    menuItem.appendChild(wordClone);
+    // Create clone container
+    const cloneContainer = document.createElement("div");
+    cloneContainer.classList.add("clone-container");
+    cloneContainer.style.position = "absolute";
+    cloneContainer.style.transform = "translateY(125%)";
+    menuItem.appendChild(cloneContainer);
+
+    // Create original container
+    const originalContainer = document.createElement("div");
+    originalContainer.classList.add("original-container");
+    originalContainer.style.display = "flex";
+    menuItem.appendChild(originalContainer);
+
+    // Get all words
+    const originalWords = Array.from(
+      menuLink.querySelectorAll(".word")
+    ) as HTMLElement[];
+
+    // Clone the words and append them to the clone container
+    const wordClones = originalWords.map((word) => {
+      const wordClone = word.cloneNode(true) as HTMLElement;
+      wordClone.classList.add("clone");
+      cloneContainer.appendChild(wordClone);
+      return wordClone;
+    });
+
+    // Preserve original spacing between words
+    cloneContainer.style.display = "flex";
+
+    // Add spaces between cloned words
+    for (let i = 0; i < wordClones.length - 1; i++) {
+      const space = document.createElement("span");
+      space.innerHTML = "&nbsp;";
+      cloneContainer.insertBefore(space, wordClones[i + 1]);
+    }
+
+    // Append the original words to the original container
+    // and preserve their original spacing
+    originalWords.forEach((originalWord) => {
+      originalContainer.appendChild(originalWord);
+      // Add a small space after each word except the last one
+      if (originalWord !== originalWords[originalWords.length - 1]) {
+        const space = document.createElement("span");
+        space.innerHTML = "&nbsp;";
+        originalContainer.appendChild(space);
+      }
+    });
 
     // Get all chars from original and clone
-    const originalChars = menuLink.querySelectorAll(".char");
-    const cloneChars = wordClone.querySelectorAll(".char");
+    const originalChars = originalContainer.querySelectorAll(".word .char");
+    const cloneChars = cloneContainer.querySelectorAll(".word .char");
 
     // Create a timeline for animations
     const tl = gsap.timeline({ paused: true });

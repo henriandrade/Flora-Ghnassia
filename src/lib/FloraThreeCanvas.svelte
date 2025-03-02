@@ -10,17 +10,20 @@
 
   let container: HTMLDivElement;
   let aspect = 1;
-  let group: Group;
+  let groupRef: Group;
+  let shadowFrameGroupRef: Group;
   let frameRef: Mesh;
+  let mouseX = 0;
+  let mouseY = 0;
 
   // Create a target vector for the camera to look at
   const cameraTarget = new Vector3(0, -200, 0);
 
   // Create a function to setup the ScrollTrigger animation
   const setupScrollTrigger = () => {
-    if (group) {
+    if (shadowFrameGroupRef) {
       gsap.fromTo(
-        group.rotation,
+        shadowFrameGroupRef.rotation,
         {
           y: 60 * MathUtils.DEG2RAD,
         },
@@ -56,9 +59,19 @@
   };
 
   // Use Svelte reactivity to detect when group is defined
-  $: if (group) {
+  $: if (shadowFrameGroupRef) {
     setupScrollTrigger();
   }
+
+  const handleMouseMove = (event: MouseEvent) => {
+    mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+    mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    if (groupRef) {
+      groupRef.rotation.y = mouseX * 5 * MathUtils.DEG2RAD;
+      groupRef.rotation.x = mouseY * 5 * MathUtils.DEG2RAD;
+    }
+  };
 
   onMount(() => {
     const updateAspect = () => {
@@ -69,9 +82,11 @@
 
     updateAspect();
     window.addEventListener("resize", updateAspect);
+    window.addEventListener("mousemove", handleMouseMove);
 
     return () => {
       window.removeEventListener("resize", updateAspect);
+      window.removeEventListener("mousemove", handleMouseMove);
       // Clean up ScrollTrigger
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
@@ -91,7 +106,7 @@
       rotation.z={5 * MathUtils.DEG2RAD}
       zoom={2.5}
     />
-    <T.Group position={[0, -0.5, 0]}>
+    <T.Group position={[0, -0.5, 0]} bind:ref={groupRef}>
       <T.Mesh name="flora-person">
         <T.PlaneGeometry args={[1, 5]} />
         <ImageMaterial
@@ -100,7 +115,7 @@
           url="https://cdn.prod.website-files.com/67a0fb16e98014c2e8572448/67c0f925d2b40212f348b3a7_flora.png"
         />
       </T.Mesh>
-      <T.Group bind:ref={group}>
+      <T.Group bind:ref={shadowFrameGroupRef}>
         <T.Mesh
           name="flora-shadow"
           rotation.x={Math.PI / 2}
