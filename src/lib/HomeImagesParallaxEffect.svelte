@@ -6,6 +6,7 @@
   import { writable } from "svelte/store";
 
   let projectContainers: NodeListOf<HTMLElement>;
+  let scrollbar: HTMLElement;
 
   const velocitySpring = spring(0, {
     stiffness: 0.1,
@@ -18,7 +19,76 @@
     updateSetted = true;
     $lenisController.on("scroll", (controller) => {
       $velocitySpring = controller.velocity;
+      updateScrollbar(controller);
     });
+  }
+
+  // Function to update custom scrollbar
+  function updateScrollbar(controller: any) {
+    if (!scrollbar) return;
+
+    const { progress, limit } = controller;
+
+    // Calculate thumb height based on viewport and content size
+    const viewportHeight = window.innerHeight;
+    const contentHeight = limit + viewportHeight;
+    const thumbHeight = Math.max(
+      50,
+      (viewportHeight / contentHeight) * viewportHeight
+    );
+
+    // Update thumb height
+    scrollbar.style.height = `${thumbHeight}px`;
+
+    // Update thumb position
+    const maxScrollDistance = viewportHeight - thumbHeight;
+    const thumbPosition = progress * maxScrollDistance;
+    scrollbar.style.transform = `translateY(${thumbPosition}px)`;
+  }
+
+  // Function to initialize custom scrollbar
+  function initScrollbar() {
+    // Apply styles to the scrollbar
+    if (scrollbar) {
+      // Keep existing styles
+      scrollbar.style.backgroundColor = "var(--jasmine)";
+      scrollbar.style.width = "0.5rem";
+      scrollbar.style.position = "fixed";
+      scrollbar.style.inset = "0% 0% 0% auto";
+      scrollbar.style.zIndex = "1200";
+      scrollbar.style.cursor = "pointer";
+      scrollbar.style.mixBlendMode = "difference";
+
+      // Add hover effect
+      scrollbar.addEventListener("mouseenter", () => {
+        scrollbar.style.opacity = "1";
+      });
+
+      scrollbar.addEventListener("mouseleave", () => {
+        scrollbar.style.opacity = "0.8";
+      });
+    }
+
+    // Hide default scrollbar
+    document.documentElement.style.scrollbarWidth = "none"; // Firefox
+    // @ts-ignore
+    document.documentElement.style.msOverflowStyle = "none"; // IE/Edge
+    document.body.style.overflow = "auto";
+    document.body.style.overflowY = "scroll";
+
+    // For WebKit browsers (Chrome, Safari)
+    const style = document.createElement("style");
+    style.textContent = `
+      ::-webkit-scrollbar {
+        display: none;
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Initial update
+    if ($lenisController) {
+      updateScrollbar($lenisController);
+    }
   }
 
   let setted = writable(false);
@@ -97,5 +167,16 @@
 
   onMount(() => {
     setupParallax();
+    scrollbar = document.querySelector(".custom-scrollbar") as HTMLElement;
+    if (scrollbar) {
+      initScrollbar();
+
+      // Update scrollbar on window resize
+      window.addEventListener("resize", () => {
+        if ($lenisController) {
+          updateScrollbar($lenisController);
+        }
+      });
+    }
   });
 </script>
