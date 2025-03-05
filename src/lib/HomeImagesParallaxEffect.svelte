@@ -107,8 +107,7 @@
       const image = container.querySelector(
         ".home-project-image.original"
       ) as HTMLImageElement;
-      image.style.zIndex = "1000";
-      image.style.transform = "translateZ(100%)";
+      image.style.zIndex = "200";
 
       let numberOfCopies = 8;
 
@@ -116,11 +115,13 @@
       const clonesContainer = document.createElement("div");
       clonesContainer.classList.add("clones-container");
       clonesContainer.style.zIndex = "0";
+      clonesContainer.style.transform = "translateZ(-1rem)";
 
       for (let i = 0; i < numberOfCopies; i++) {
         const imgCopy = image.cloneNode(true) as HTMLImageElement;
         imgCopy.classList.remove("original");
         imgCopy.classList.add("clone");
+        imgCopy.style.zIndex = "100";
         clonesContainer.appendChild(imgCopy);
       }
 
