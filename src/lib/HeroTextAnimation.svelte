@@ -2,84 +2,186 @@
   import SplitType from "split-type";
   import gsap from "gsap";
   import { onMount } from "svelte";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  // Register ScrollTrigger plugin
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Debounce function to limit how often a function can run
+  function debounce(func: Function, wait: number) {
+    let timeout: number | null = null;
+    return function (...args: any[]) {
+      // @ts-ignore
+      const context = this;
+      clearTimeout(timeout as number);
+      timeout = setTimeout(() => {
+        func.apply(context, args);
+      }, wait) as unknown as number;
+    };
+  }
 
   onMount(() => {
-    // Select the spans
-    const floraSpan = document.querySelector(".hero-flora") as HTMLElement;
-    const ghnassiaSpan = document.querySelector(
-      ".hero-ghnassia"
-    ) as HTMLElement;
+    // Store references for cleanup
+    let splitInstances: SplitType[] = [];
+    let heroObserver: ResizeObserver;
+    let resizeObservers: ResizeObserver[] = [];
+    // Track processing state for each element being split
+    const processingElements = new Map<string, boolean>();
 
-    // Apply SplitType to both spans
-    const floraSplit = new SplitType(floraSpan, { types: "chars" });
-    const ghnassiaSplit = new SplitType(ghnassiaSpan, { types: "chars" });
+    // Function to initialize hero name animation
+    const initHeroNameAnimation = () => {
+      const heroId = "hero-animation";
+      // Prevent recursive calls during splitting for this specific element
+      if (processingElements.get(heroId)) return;
+      processingElements.set(heroId, true);
 
-    // Create timeline for animation
-    const tl = gsap.timeline();
+      // Clean up previous instances if they exist
+      splitInstances.forEach((instance) => instance.revert());
 
-    // Animate Flora characters
-    tl.from(floraSplit.chars, {
-      y: "-100%",
-      opacity: 0,
-      duration: 5,
-      ease: "power4.out",
-      stagger: {
-        amount: 0.8,
-        ease: "power2.inOut",
-      },
-    });
+      // Select the spans
+      const floraSpan = document.querySelector(".hero-flora") as HTMLElement;
+      const ghnassiaSpan = document.querySelector(
+        ".hero-ghnassia"
+      ) as HTMLElement;
 
-    // Animate Ghnassia characters
-    tl.from(
-      ghnassiaSplit.chars,
-      {
+      if (!floraSpan || !ghnassiaSpan) {
+        processingElements.set(heroId, false);
+        return;
+      }
+
+      // Apply SplitType to both spans
+      const floraSplit = new SplitType(floraSpan, { types: "chars" });
+      const ghnassiaSplit = new SplitType(ghnassiaSpan, { types: "chars" });
+
+      // Store instances for cleanup
+      splitInstances.push(floraSplit, ghnassiaSplit);
+
+      // Create timeline for animation
+      const tl = gsap.timeline();
+
+      // Animate Flora characters
+      tl.from(floraSplit.chars || [], {
         y: "-100%",
         opacity: 0,
         duration: 5,
         ease: "power4.out",
         stagger: {
           amount: 0.8,
-          ease: "power1.out",
+          ease: "power2.inOut",
         },
-      },
-      "-=85%"
-    ); // Start slightly before the Flora animation completes
-
-    tl.eventCallback("onComplete", () => {
-      // Add hover interaction for each character
-      const allChars = [...floraSplit.chars!, ...ghnassiaSplit.chars!];
-
-      allChars.forEach((char) => {
-        char.style.transition = "transform 0.4s ease";
-
-        // Add mouse enter event
-        char.addEventListener("mouseenter", () => {
-          gsap.to(char, {
-            y: "-50%",
-            duration: 0.4,
-            ease: "power3.inOut",
-          });
-        });
-
-        // Create a function to handle the animation reset
-        const resetCharPosition = () => {
-          gsap.to(char, {
-            y: "0%",
-            duration: 0.4,
-            ease: "power2.out",
-          });
-        };
-
-        // Add mouse leave event
-        char.addEventListener("mouseleave", resetCharPosition);
       });
-    });
+
+      // Animate Ghnassia characters
+      tl.from(
+        ghnassiaSplit.chars || [],
+        {
+          y: "-100%",
+          opacity: 0,
+          duration: 5,
+          ease: "power4.out",
+          stagger: {
+            amount: 0.8,
+            ease: "power1.out",
+          },
+        },
+        "-=85%"
+      ); // Start slightly before the Flora animation completes
+
+      tl.eventCallback("onComplete", () => {
+        // Add hover interaction for each character
+        const allChars = [
+          ...(floraSplit.chars || []),
+          ...(ghnassiaSplit.chars || []),
+        ].filter(Boolean);
+
+        if (allChars.length > 0) {
+          allChars.forEach((char) => {
+            char.style.transition = "transform 0.4s ease";
+
+            // Add mouse enter event
+            char.addEventListener("mouseenter", () => {
+              gsap.to(char, {
+                y: "-50%",
+                duration: 0.4,
+                ease: "power3.inOut",
+              });
+            });
+
+            // Create a function to handle the animation reset
+            const resetCharPosition = () => {
+              gsap.to(char, {
+                y: "0%",
+                duration: 0.4,
+                ease: "power2.out",
+              });
+            };
+
+            // Add mouse leave event
+            char.addEventListener("mouseleave", resetCharPosition);
+          });
+        }
+
+        // Reset the flag after animations are complete
+        processingElements.set(heroId, false);
+      });
+
+      // If animation doesn't complete for some reason, reset the flag
+      setTimeout(() => {
+        processingElements.set(heroId, false);
+      }, 100);
+    };
+
+    // Initialize animation
+    initHeroNameAnimation();
+
+    // Set up ResizeObserver for hero container with flag check
+    const heroContainer = document.querySelector(".home-hero-container");
+    if (heroContainer) {
+      const heroResizeObserver = new ResizeObserver(
+        debounce(() => {
+          const heroId = "hero-animation";
+          if (!processingElements.get(heroId)) {
+            initHeroNameAnimation();
+          }
+        }, 300)
+      );
+
+      heroResizeObserver.observe(heroContainer);
+      heroObserver = heroResizeObserver;
+    }
+
+    // Handle window resize events with flag check
+    const handleResize = debounce(() => {
+      const heroId = "hero-animation";
+      if (!processingElements.get(heroId)) {
+        initHeroNameAnimation();
+      }
+    }, 300);
+
+    window.addEventListener("resize", handleResize);
 
     const textElementsToAnimate = document.querySelectorAll(
       "[animate-text-duration]"
     ) as NodeListOf<HTMLElement>;
 
-    textElementsToAnimate.forEach((textElement) => {
+    // Function to initialize text animation for a single element
+    const initTextAnimation = (textElement: HTMLElement) => {
+      const elementId =
+        textElement.id ||
+        `text-element-${Math.random().toString(36).substr(2, 9)}`;
+      // Prevent recursive calls during splitting for this specific element
+      if (processingElements.get(elementId)) return;
+      processingElements.set(elementId, true);
+
+      // Find and revert any existing split instance for this element
+      const splitInstance = splitInstances.find((instance) => {
+        return instance.lines?.some((line) => line.firstChild === textElement);
+      });
+
+      if (splitInstance) {
+        splitInstance.revert();
+      }
+
       const duration = parseFloat(
         textElement.getAttribute("animate-text-duration") || "1"
       );
@@ -89,43 +191,115 @@
         textElement.getAttribute("animate-delay") || "0"
       );
 
-      // Split text by lines
-      const splitText = new SplitType(textElement, { types: "lines" });
+      // Capture the original text content and styling before splitting
+      const originalText = textElement.textContent;
+      const computedStyle = window.getComputedStyle(textElement);
+      const originalLineHeight = computedStyle.lineHeight;
+      const originalFontSize = computedStyle.fontSize;
 
-      // Add overflow hidden to each line element
-      if (splitText.lines) {
-        // Set overflow hidden on all line elements
-        splitText.lines.forEach((line) => {
-          line.style.overflow = "hidden";
-
-          // Create a container for the content to animate
-          const contentWrapper = document.createElement("div");
-          contentWrapper.innerHTML = line.innerHTML;
-          contentWrapper.style.display = "block";
-
-          // Clear original content and append the wrapper
-          line.innerHTML = "";
-          line.appendChild(contentWrapper);
+      requestAnimationFrame(() => {
+        // Split text by lines
+        const splitText = new SplitType(textElement, {
+          types: "lines",
+          lineClass: "split-line",
         });
+        splitInstances.push(splitText);
 
-        // Animate all content wrappers with staggered timing using ScrollTrigger
-        gsap.fromTo(
-          splitText.lines.map((line) => line.firstChild),
-          { y: "150%" },
-          {
-            y: "0%",
-            duration: duration,
-            delay: delay,
-            stagger: 0.1, // Add stagger effect between lines
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: textElement,
-              start: "top bottom-=100",
-              toggleActions: "play none none none",
-            },
+        // Add overflow hidden to each line element
+        if (splitText.lines) {
+          // Set overflow hidden on all line elements
+          splitText.lines.forEach((line) => {
+            // Apply critical styles inline to maintain text layout
+            line.style.overflowY = "hidden";
+            line.style.overflowX = "visible";
+            line.style.display = "block";
+            line.style.width = "100%";
+            line.style.whiteSpace = "nowrap";
+            line.style.position = "relative";
+            line.style.boxSizing = "border-box";
+
+            // Create a container for the content to animate
+            const contentWrapper = document.createElement("div");
+            contentWrapper.innerHTML = line.innerHTML;
+            contentWrapper.style.display = "inline-block";
+
+            // Clear original content and append the wrapper
+            line.innerHTML = "";
+            line.appendChild(contentWrapper);
+          });
+
+          // Animate all content wrappers with staggered timing using ScrollTrigger
+          gsap.fromTo(
+            splitText.lines.map((line) => line.firstChild),
+            { y: "150%" },
+            {
+              y: "0%",
+              duration: duration,
+              delay: delay,
+              stagger: 0.1, // Add stagger effect between lines
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: textElement,
+                start: "top bottom-=100",
+                toggleActions: "play reset play reset",
+              },
+            }
+          );
+        }
+
+        // Reset the flag after processing
+        setTimeout(() => {
+          processingElements.set(elementId, false);
+        }, 100);
+      });
+    };
+
+    // Initialize text animations for all elements
+    textElementsToAnimate.forEach((textElement) => {
+      // Initialize animation for this element
+      textElement.style.position = "relative";
+      initTextAnimation(textElement);
+
+      // Set up ResizeObserver for this element
+      const textResizeObserver = new ResizeObserver(
+        debounce(() => {
+          const elementId =
+            textElement.id ||
+            `text-element-${Math.random().toString(36).substr(2, 9)}`;
+          // Only recalculate if we're not already processing a split for this element
+          if (!processingElements.get(elementId)) {
+            initTextAnimation(textElement);
           }
-        );
-      }
+        }, 300)
+      );
+
+      textResizeObserver.observe(textElement.parentElement!);
+      resizeObservers.push(textResizeObserver);
     });
+
+    // Cleanup function
+    return () => {
+      // Remove event listeners
+      window.removeEventListener("resize", handleResize);
+
+      if (heroObserver) {
+        heroObserver.disconnect();
+      }
+
+      // Disconnect all observers
+      resizeObservers.forEach((observer) => {
+        if (observer instanceof ResizeObserver) {
+          observer.disconnect();
+        }
+      });
+
+      // Revert all split instances
+      splitInstances.forEach((instance) => instance.revert());
+
+      // Kill all GSAP animations
+      gsap.killTweensOf(
+        document.querySelectorAll(".hero-flora, .hero-ghnassia")
+      );
+    };
   });
 </script>
