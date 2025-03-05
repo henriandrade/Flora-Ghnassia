@@ -116,6 +116,7 @@
       const clonesContainer = document.createElement("div");
       clonesContainer.classList.add("clones-container");
       clonesContainer.style.zIndex = "0";
+      clonesContainer.style.pointerEvents = "none";
 
       for (let i = 0; i < numberOfCopies; i++) {
         const imgCopy = image.cloneNode(true) as HTMLImageElement;
