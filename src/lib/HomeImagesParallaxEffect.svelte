@@ -103,6 +103,7 @@
 
       // Remove the container transform
       container.style.transform = "none";
+      container.style.transformStyle = "flat";
 
       const image = container.querySelector(
         ".home-project-image.original"
