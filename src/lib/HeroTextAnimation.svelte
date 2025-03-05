@@ -200,7 +200,7 @@
       requestAnimationFrame(() => {
         // Split text by lines
         const splitText = new SplitType(textElement, {
-          types: "lines",
+          types: "lines,words",
           lineClass: "split-line",
         });
         splitInstances.push(splitText);
@@ -213,7 +213,7 @@
             line.style.overflowY = "hidden";
             line.style.overflowX = "visible";
             line.style.display = "block";
-            line.style.width = "100%";
+            line.style.width = "fit-content";
             line.style.whiteSpace = "nowrap";
             line.style.position = "relative";
             line.style.boxSizing = "border-box";
