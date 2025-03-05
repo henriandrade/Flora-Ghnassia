@@ -2,8 +2,12 @@
   import { onMount } from "svelte";
   import { lenisController } from "../Lenis";
   import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { spring } from "svelte/motion";
   import { writable } from "svelte/store";
+
+  // Register ScrollTrigger plugin
+  gsap.registerPlugin(ScrollTrigger);
 
   let projectContainers: NodeListOf<HTMLElement>;
   let scrollbar: HTMLElement;
@@ -91,12 +95,37 @@
     }
   }
 
+  // Setup ScrollTrigger parallax for project containers
+  const setupScrollTriggerParallax = () => {
+    projectContainers.forEach((container, index) => {
+      // Create parallax effect with ScrollTrigger
+      gsap.fromTo(
+        container,
+        { y: "15svh" },
+        {
+          y: "-15svh",
+          ease: "linear",
+          scrollTrigger: {
+            trigger: container,
+            start: "-15% 65%",
+            end: "115% 65%",
+            scrub: true,
+            markers: true,
+          },
+        }
+      );
+    });
+  };
+
   let setted = writable(false);
   const setupParallax = () => {
     if ($setted) return;
     $setted = true;
     document.body.style.setProperty("--scroll-velocity", "0");
     projectContainers = document.querySelectorAll(".home-project-instance");
+
+    // Setup ScrollTrigger parallax
+    setupScrollTriggerParallax();
 
     for (let container of projectContainers) {
       const rotationTransform = window.getComputedStyle(container).transform;
@@ -181,5 +210,10 @@
         }
       });
     }
+
+    return () => {
+      // Clean up ScrollTrigger instances on component unmount
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
   });
 </script>
