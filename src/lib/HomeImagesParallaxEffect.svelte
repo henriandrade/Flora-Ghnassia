@@ -98,6 +98,61 @@
   // Setup ScrollTrigger parallax for project containers
   const setupScrollTriggerParallax = () => {
     projectContainers.forEach((container, index) => {
+      const projectInfo = container.querySelector(
+        ".home-project-info"
+      ) as HTMLElement;
+      if (projectInfo) {
+        // Set initial position properties for each info element
+        if (!projectInfo.hasAttribute("data-initialized")) {
+          // Store the target position
+          projectInfo.setAttribute("data-x", "0");
+          projectInfo.setAttribute("data-y", "0");
+
+          // Mark as initialized to avoid re-initializing
+          projectInfo.setAttribute("data-initialized", "true");
+
+          // Set initial position with GSAP
+          gsap.set(projectInfo, {
+            x: 0,
+            y: 0,
+            // Make sure the element can be positioned
+            position: "relative",
+            // Ensure it stays above other elements
+            zIndex: "300",
+          });
+        }
+
+        container.addEventListener("mousemove", (e) => {
+          const rect = container.getBoundingClientRect();
+          const x = e.clientX - rect.left; // X position within the container
+          const y = e.clientY - rect.top; // Y position within the container
+
+          // Center the info element on the cursor
+          const infoWidth = projectInfo.offsetWidth;
+          const infoHeight = projectInfo.offsetHeight;
+          const targetX = x - infoWidth / 2;
+          const targetY = y - infoHeight / 2;
+
+          // Update the target position attributes
+          projectInfo.setAttribute("data-x", targetX.toString());
+          projectInfo.setAttribute("data-y", targetY.toString());
+
+          // Animate to the new position with spring physics
+          gsap.to(projectInfo, {
+            x: targetX,
+            y: targetY,
+            duration: 0.8, // Duration of the spring animation
+            ease: "elastic.out(1, 0.75)", // Spring effect - adjust values for different feel
+            overwrite: true, // Ensures only the latest animation runs
+          });
+        });
+
+        container.addEventListener("mouseleave", () => {
+          // Reset position when mouse leaves.  Important!
+          projectInfo.style.transform = ""; // Or a specific default position if needed.
+        });
+      }
+
       // Create parallax effect with ScrollTrigger
       gsap.fromTo(
         container,
@@ -110,7 +165,6 @@
             start: "-15% 65%",
             end: "115% 65%",
             scrub: true,
-            markers: true,
           },
         }
       );
