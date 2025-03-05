@@ -115,8 +115,6 @@
           gsap.set(projectInfo, {
             x: 0,
             y: 0,
-            // Make sure the element can be positioned
-            position: "relative",
             // Ensure it stays above other elements
             zIndex: "300",
           });
