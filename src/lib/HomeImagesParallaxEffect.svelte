@@ -115,7 +115,6 @@
       const clonesContainer = document.createElement("div");
       clonesContainer.classList.add("clones-container");
       clonesContainer.style.zIndex = "0";
-      clonesContainer.style.transform = "translateZ(-1rem)";
 
       for (let i = 0; i < numberOfCopies; i++) {
         const imgCopy = image.cloneNode(true) as HTMLImageElement;
@@ -142,10 +141,11 @@
         element.style.opacity = `${opacity}`;
         const translateX = `-${translate * 1.25 + ((transformIndex * transformIndex) / 2 || 0) * 0.1}rem`;
         const translateY = `${translate * 2}rem`;
+        const translateZ = `${translate * -0.05 * transformIndex}rem`;
         const factor = transformIndex;
         const parallaxY = `calc(var(--scroll-velocity)*${factor}*0.05rem)`;
 
-        element.style.transform = `${rotationTransform} translateY(${parallaxY}) translate3d(${translateX}, ${translateY}, 0)`;
+        element.style.transform = `${rotationTransform} translateY(${parallaxY}) translate3d(${translateX}, ${translateY}, ${translateZ})`;
       };
 
       applyStyles(image, { opacity: 1, translate: 0, transformIndex: 0 });
