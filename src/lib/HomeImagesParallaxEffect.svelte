@@ -180,7 +180,20 @@
     setupScrollTriggerParallax();
 
     for (let container of projectContainers) {
-      const rotationTransform = window.getComputedStyle(container).transform;
+      // Extract only the rotation component from the transform matrix
+      const computedTransform = window.getComputedStyle(container).transform;
+      let rotationTransform = "rotate(0deg)";
+
+      if (computedTransform && computedTransform !== "none") {
+        // Convert matrix to array of values
+        const matrix = computedTransform.match(/^matrix\((.+)\)$/);
+        if (matrix) {
+          const values = matrix[1].split(", ").map(parseFloat);
+          // Calculate rotation angle from the matrix
+          const angle = Math.atan2(values[1], values[0]) * (180 / Math.PI);
+          rotationTransform = `rotate(${angle}deg)`;
+        }
+      }
 
       // Remove the container transform
       container.style.transform = "none";
