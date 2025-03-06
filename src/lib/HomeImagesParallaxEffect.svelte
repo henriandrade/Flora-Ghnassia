@@ -198,6 +198,8 @@
       clonesContainer.classList.add("clones-container");
       clonesContainer.style.zIndex = "0";
       clonesContainer.style.pointerEvents = "none";
+      clonesContainer.style.position = "absolute";
+      clonesContainer.style.width = "100%";
 
       for (let i = 0; i < numberOfCopies; i++) {
         const imgCopy = image.cloneNode(true) as HTMLImageElement;
