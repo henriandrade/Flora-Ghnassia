@@ -118,36 +118,24 @@
       });
     };
 
+    // Modified fadeOutAllArrows to prevent premature removal
     const fadeOutAllArrows = () => {
       const allArrows = document.querySelectorAll(".next-link-arrow");
 
-      if (allArrows.length === 0) {
-        links.forEach((link) => {
-          const h1 = link.querySelector("h1") as HTMLElement;
-          if (h1 && linkOriginalText.has(h1)) {
-            h1.innerHTML = linkOriginalText.get(h1) || "";
-          }
-        });
-        return;
-      }
-
-      let animationCount = allArrows.length;
       allArrows.forEach((arrowEl) => {
         const arrow = arrowEl as HTMLElement;
-        const h1 = arrow.closest("h1") as HTMLElement;
 
         gsap.to(arrow, {
           opacity: 0,
           duration: 0.3,
           ease: "power3.inOut",
           onComplete: () => {
-            if (--animationCount === 0) {
-              links.forEach((link) => {
-                const linkH1 = link.querySelector("h1") as HTMLElement;
-                if (linkH1 && linkOriginalText.has(linkH1)) {
-                  linkH1.innerHTML = linkOriginalText.get(linkH1) || "";
-                }
-              });
+            // Only remove if no link is currently active
+            if (!activeLink) {
+              const h1 = arrow.closest("h1") as HTMLElement;
+              if (h1 && linkOriginalText.has(h1)) {
+                h1.innerHTML = linkOriginalText.get(h1) || "";
+              }
             }
           },
         });
@@ -251,21 +239,15 @@
 
       hoverTimeout = setTimeout(() => {
         if (pendingLink !== target || activeLink === target) return;
-        // The issue was likely caused by the fact that `getBoundingClientRect()`
-        // returns values relative to the viewport. When quickly moving the mouse,
-        // especially near the bottom of the container, the calculated `top`
-        // position might be slightly off due to rapid changes in scroll position
-        // or other layout shifts. Using relative positioning fixes this.
 
         const isDirectNeighbor =
           activeLink &&
           (activeLink.nextElementSibling === target ||
             activeLink.previousElementSibling === target);
 
-        // Use offsetTop/offsetHeight for calculations relative to the parent
         const linkTop = target.offsetTop;
         const linkHeight = target.offsetHeight;
-        const mouseYRelative = e.offsetY; // Use offsetY for relative mouse position
+        const mouseYRelative = e.offsetY;
         const scaleDirection =
           mouseYRelative / linkHeight < 0.5 ? "down" : "up";
 
@@ -282,7 +264,6 @@
 
         if (isDirectNeighbor && activeBackgrounds.length > 0) {
           const currentBg = activeBackgrounds[activeBackgrounds.length - 1];
-          // Use offsetTop for the target position
           gsap.to(currentBg, {
             top: `${linkTop}px`,
             height: `${linkHeight}px`,
@@ -292,7 +273,6 @@
         } else {
           const newBg = createHoverBg();
           container.appendChild(newBg);
-          // Use offsetTop for initial position
           newBg.style.top = `${linkTop}px`;
           newBg.style.height = `${linkHeight}px`;
           newBg.style.transform = `scaleY(0)`;
@@ -339,6 +319,8 @@
       }
 
       pendingLink = null;
+
+      // Do not immediately fade out arrows, wait for container leave
       if (!activeLink) return;
 
       const relatedTarget = e.relatedTarget as HTMLElement;
@@ -346,12 +328,12 @@
         relatedTarget && relatedTarget.closest(".next-link") !== null;
 
       if (!isHoveringAnotherLink) {
+        // Only proceed if not hovering another link
         activeBackgrounds.forEach((bg) => animateOutBackground(bg, e));
         updateHeadingVisibility(false);
-        fadeOutAllArrows();
         setLinkBorders(activeLink, false);
         setLinkTextColor(activeLink, false);
-        activeLink = null;
+        // activeLink = null; // Don't nullify here, wait for container leave
       }
     };
 
@@ -362,16 +344,20 @@
       }
 
       pendingLink = null;
-      if (activeBackgrounds.length === 0) return;
+      if (activeBackgrounds.length === 0 && !activeLink) return;
 
       activeBackgrounds.forEach((bg) => animateOutBackground(bg, e));
       updateHeadingVisibility(false);
-      fadeOutAllArrows();
-      activeLink = null;
+      fadeOutAllArrows(); // Now safe to call because we are sure mouse is outside
+      if (activeLink) {
+        setLinkBorders(activeLink, false);
+        setLinkTextColor(activeLink, false);
+      }
+      activeLink = null; // Nullify activeLink here
     };
 
     const checkMouseOutside = (e: MouseEvent) => {
-      if (activeBackgrounds.length === 0) return;
+      if (activeBackgrounds.length === 0 && !activeLink) return;
 
       const containerRect = container.getBoundingClientRect();
       const isOutside =
@@ -382,6 +368,7 @@
 
       if (isOutside) {
         activeBackgrounds.forEach((bg) => animateOutBackground(bg, e));
+        // fadeOutAllArrows(); // Don't call here, handle on container leave
         activeLink = null;
       }
     };

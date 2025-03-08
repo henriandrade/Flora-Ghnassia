@@ -34,7 +34,6 @@
   onMount(() => {
     gsap.registerPlugin(ScrollTrigger);
     whenDomIsReady(() => {
-      console.log("Webflow Custom Animations Loaded v6");
       webflowIsReady = true;
     });
   });

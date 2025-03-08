@@ -192,21 +192,23 @@
       // Extract only the rotation component from the transform matrix
       const computedTransform = window.getComputedStyle(container).transform;
       let rotationTransform = "rotate(0deg)";
+      let angle = 0;
 
       if (computedTransform && computedTransform !== "none") {
         // Convert matrix to array of values
-        const matrix = computedTransform.match(/^matrix\((.+)\)$/);
+        const matrix = computedTransform.match(/^matrix3d\((.+)\)$/);
         if (matrix) {
           const values = matrix[1].split(", ").map(parseFloat);
           // Calculate rotation angle from the matrix
-          const angle = Math.atan2(values[1], values[0]) * (180 / Math.PI);
+          angle = Math.atan2(values[1], values[0]) * (180 / Math.PI);
           rotationTransform = `rotate(${angle}deg)`;
         }
       }
 
       // Remove the container transform
-      container.style.transform = "none";
+      container.removeAttribute("style");
       container.style.transformStyle = "flat";
+      console.log(container);
 
       const image = container.querySelector(
         ".home-project-image.original"
@@ -254,7 +256,7 @@
         const factor = transformIndex;
         const parallaxY = `calc(var(--scroll-velocity)*${factor}*0.05rem)`;
 
-        element.style.transform = `${rotationTransform} translateY(${parallaxY}) translate3d(${translateX}, ${translateY}, ${translateZ})`;
+        element.style.transform = `translateY(${parallaxY}) translate3d(${translateX}, ${translateY}, ${translateZ})`;
       };
 
       applyStyles(image, { opacity: 1, translate: 0, transformIndex: 0 });
@@ -271,6 +273,31 @@
           index / numberOfCopies
         );
         applyStyles(img, { opacity, translate, transformIndex: index + 1 });
+      }
+
+      // Apply inverse rotation to the child of .home-project-info on landscape viewports that are not mobile devices
+      const projectInfo = container.querySelector(
+        ".home-project-info"
+      ) as HTMLElement;
+      const infoOffset = projectInfo.querySelector(
+        ".info-offset"
+      ) as HTMLElement;
+
+      if (infoOffset) {
+        const mediaQuery = window.matchMedia(
+          "(orientation: landscape) and (hover: hover) and (pointer: fine)"
+        );
+
+        const applyInverseRotation = () => {
+          if (mediaQuery.matches) {
+            infoOffset.style.transform = `rotate(${-angle}deg)`;
+          } else {
+            infoOffset.style.transform = ""; // Reset if not matching the criteria
+          }
+        };
+        applyInverseRotation();
+        // Listen for changes in the media query (e.g., orientation change)
+        mediaQuery.addEventListener("change", applyInverseRotation);
       }
     }
   };
