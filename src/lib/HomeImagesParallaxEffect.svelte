@@ -101,6 +101,10 @@
       const projectInfo = container.querySelector(
         ".home-project-info"
       ) as HTMLElement;
+      const customCursorContainer = document.querySelector(
+        ".custom-cursor-container"
+      ) as HTMLElement;
+
       if (projectInfo) {
         // Set initial position properties for each info element
         if (!projectInfo.hasAttribute("data-initialized")) {
@@ -143,11 +147,16 @@
             ease: "elastic.out(1, 0.75)", // Spring effect - adjust values for different feel
             overwrite: true, // Ensures only the latest animation runs
           });
+          if (customCursorContainer) {
+            customCursorContainer.style.display = "none";
+          }
         });
 
         container.addEventListener("mouseleave", () => {
-          // Reset position when mouse leaves.  Important!
           projectInfo.style.transform = ""; // Or a specific default position if needed.
+          if (customCursorContainer) {
+            customCursorContainer.style.display = "block";
+          }
         });
       }
 
@@ -237,7 +246,9 @@
         }: { opacity: number; translate: number; transformIndex: number }
       ) => {
         element.style.opacity = `${opacity}`;
-        const translateX = `-${translate * 1.25 + ((transformIndex * transformIndex) / 2 || 0) * 0.1}rem`;
+        const translateX = `-${
+          translate * 1.25 + ((transformIndex * transformIndex) / 2 || 0) * 0.1
+        }rem`;
         const translateY = `${translate * 2}rem`;
         const translateZ = `${translate * -0.05 * transformIndex}rem`;
         const factor = transformIndex;

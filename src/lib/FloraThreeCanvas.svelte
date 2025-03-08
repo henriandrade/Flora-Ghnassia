@@ -16,9 +16,6 @@
   let mouseX = 0;
   let mouseY = 0;
 
-  // Create a target vector for the camera to look at
-  const cameraTarget = new Vector3(0, -200, 0);
-
   // Create a function to setup the ScrollTrigger animation
   const setupScrollTrigger = () => {
     if (shadowFrameGroupRef) {
@@ -43,10 +40,10 @@
       gsap.fromTo(
         frameRef.rotation,
         {
-          y: 60 * MathUtils.DEG2RAD,
+          y: 0 * MathUtils.DEG2RAD,
         },
         {
-          y: -20 * MathUtils.DEG2RAD,
+          y: -35 * MathUtils.DEG2RAD,
           scrollTrigger: {
             trigger: container,
             start: "top bottom",
@@ -103,7 +100,7 @@
       makeDefault
       position={[0, 2, 25]}
       rotation.x={-5 * MathUtils.DEG2RAD}
-      rotation.z={5 * MathUtils.DEG2RAD}
+      rotation.z={2.5 * MathUtils.DEG2RAD}
       zoom={2.5}
     />
     <T.Group position={[0, -0.5, 0]} bind:ref={groupRef}>
@@ -112,6 +109,8 @@
         <ImageMaterial
           transparent
           side={2}
+          alphaSmoothing={1}
+          toneMapped={false}
           url="https://cdn.prod.website-files.com/67a0fb16e98014c2e8572448/67c0f925d2b40212f348b3a7_flora.png"
         />
       </T.Mesh>
@@ -125,15 +124,19 @@
           <ImageMaterial
             transparent
             side={2}
+            alphaSmoothing={1}
+            toneMapped={false}
             url="https://cdn.prod.website-files.com/67a0fb16e98014c2e8572448/67c0f92a0f6906a8aa87c079_flora-shadow.png"
           />
         </T.Mesh>
-        <T.Mesh name="flora-frame" position={[0, 2, -4]} bind:ref={frameRef}>
-          <T.PlaneGeometry args={[1.5, 3]} />
+        <T.Mesh name="flora-frame" position={[0, 2.4, -5]} bind:ref={frameRef}>
+          <T.PlaneGeometry args={[2.25, 3.5]} />
           <ImageMaterial
             side={2}
+            alphaSmoothing={1}
             transparent
-            url="https://cdn.prod.website-files.com/67a0fb16e98014c2e8572448/67b7be73078ec50bf1b6ce04_flora-frame.png"
+            toneMapped={false}
+            url="https://cdn.prod.website-files.com/67a0fb16e98014c2e8572448/67cb7bdf05f61be36a9907fd_e951ed124eeb253405d21f874ab3bfd9.png"
           />
         </T.Mesh></T.Group
       >

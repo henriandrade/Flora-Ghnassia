@@ -4,6 +4,8 @@
   import { onMount } from "svelte";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+  const DURATION = 2;
+
   // Register ScrollTrigger plugin
   gsap.registerPlugin(ScrollTrigger);
 
@@ -59,33 +61,31 @@
       // Create timeline for animation
       const tl = gsap.timeline();
 
-      // Animate Flora characters
       tl.from(floraSplit.chars || [], {
         y: "-100%",
         opacity: 0,
-        duration: 5,
-        ease: "power4.out",
+        duration: DURATION,
+        ease: "power5.out",
         stagger: {
           amount: 0.8,
           ease: "power2.inOut",
         },
       });
 
-      // Animate Ghnassia characters
       tl.from(
         ghnassiaSplit.chars || [],
         {
           y: "-100%",
           opacity: 0,
-          duration: 5,
-          ease: "power4.out",
+          duration: DURATION,
+          ease: "power5.out",
           stagger: {
             amount: 0.8,
             ease: "power1.out",
           },
         },
-        "-=85%"
-      ); // Start slightly before the Flora animation completes
+        "-=65%"
+      );
 
       tl.eventCallback("onComplete", () => {
         // Add hover interaction for each character
@@ -101,9 +101,9 @@
             // Add mouse enter event
             char.addEventListener("mouseenter", () => {
               gsap.to(char, {
-                y: "-50%",
-                duration: 0.4,
-                ease: "power3.inOut",
+                y: "-2rem",
+                duration: 0.3,
+                ease: "power5.out",
               });
             });
 
@@ -111,8 +111,8 @@
             const resetCharPosition = () => {
               gsap.to(char, {
                 y: "0%",
-                duration: 0.4,
-                ease: "power2.out",
+                duration: 0.3,
+                ease: "power5.out",
               });
             };
 
