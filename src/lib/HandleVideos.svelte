@@ -14,7 +14,7 @@
 
   onMount(() => {
     const videos =
-      document.querySelectorAll<HTMLVideoElement>(".fun-section video");
+      document.querySelectorAll<HTMLVideoElement>(".fun-video video");
 
     videos.forEach((video) => {
       video.pause();
@@ -24,11 +24,11 @@
       checkAutoplay(video);
 
       // Play on hover for desktop
-      video.addEventListener("mouseenter", () => {
+      video.parentElement?.addEventListener("mouseenter", () => {
         video.play();
       });
 
-      video.addEventListener("mouseleave", () => {
+      video.parentElement?.addEventListener("mouseleave", () => {
         video.pause();
       });
 

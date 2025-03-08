@@ -251,16 +251,23 @@
 
       hoverTimeout = setTimeout(() => {
         if (pendingLink !== target || activeLink === target) return;
+        // The issue was likely caused by the fact that `getBoundingClientRect()`
+        // returns values relative to the viewport. When quickly moving the mouse,
+        // especially near the bottom of the container, the calculated `top`
+        // position might be slightly off due to rapid changes in scroll position
+        // or other layout shifts. Using relative positioning fixes this.
 
         const isDirectNeighbor =
           activeLink &&
           (activeLink.nextElementSibling === target ||
             activeLink.previousElementSibling === target);
 
-        const linkRect = target.getBoundingClientRect();
-        const mouseYRelative = e.clientY - linkRect.top;
+        // Use offsetTop/offsetHeight for calculations relative to the parent
+        const linkTop = target.offsetTop;
+        const linkHeight = target.offsetHeight;
+        const mouseYRelative = e.offsetY; // Use offsetY for relative mouse position
         const scaleDirection =
-          mouseYRelative / linkRect.height < 0.5 ? "down" : "up";
+          mouseYRelative / linkHeight < 0.5 ? "down" : "up";
 
         updateHeadingVisibility(true);
         addArrowToText(target);
@@ -275,17 +282,19 @@
 
         if (isDirectNeighbor && activeBackgrounds.length > 0) {
           const currentBg = activeBackgrounds[activeBackgrounds.length - 1];
+          // Use offsetTop for the target position
           gsap.to(currentBg, {
-            top: `${linkRect.top - container.getBoundingClientRect().top}px`,
-            height: `${linkRect.height}px`,
+            top: `${linkTop}px`,
+            height: `${linkHeight}px`,
             duration: 0.3,
             ease: "power3.inOut",
           });
         } else {
           const newBg = createHoverBg();
           container.appendChild(newBg);
-          newBg.style.top = `${linkRect.top - container.getBoundingClientRect().top}px`;
-          newBg.style.height = `${linkRect.height}px`;
+          // Use offsetTop for initial position
+          newBg.style.top = `${linkTop}px`;
+          newBg.style.height = `${linkHeight}px`;
           newBg.style.transform = `scaleY(0)`;
           newBg.style.transformOrigin =
             scaleDirection === "down" ? "top center" : "bottom center";
