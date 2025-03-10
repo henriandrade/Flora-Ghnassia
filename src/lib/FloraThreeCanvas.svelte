@@ -105,7 +105,7 @@
     />
     <T.Group position={[0, -0.5, 0]} bind:ref={groupRef}>
       <T.Mesh name="flora-person">
-        <T.PlaneGeometry args={[1, 5]} />
+        <T.PlaneGeometry args={[1.2, 5]} />
         <ImageMaterial
           transparent
           side={2}
@@ -117,8 +117,8 @@
       <T.Group bind:ref={shadowFrameGroupRef}>
         <T.Mesh
           name="flora-shadow"
-          rotation.x={Math.PI / 2}
-          position={[-0.4, -2.45, 1.75]}
+          rotation.x={Math.PI / 1.9}
+          position={[-0.3, -2.6, 1.75]}
         >
           <T.PlaneGeometry args={[1, 5]} />
           <ImageMaterial
