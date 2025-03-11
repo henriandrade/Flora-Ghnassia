@@ -200,6 +200,10 @@
 
   onMount(() => {
     canvasElement = document.querySelector(".drawing-canvas") as HTMLElement;
+    if (!canvasElement) {
+      console.error("Drawing canvas element not found");
+      return;
+    }
 
     // Create canvas element
     canvas = document.createElement("canvas");
@@ -249,13 +253,3 @@
     };
   });
 </script>
-
-<style>
-  :global(.drawing-canvas) {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    overflow: hidden;
-  }
-</style>

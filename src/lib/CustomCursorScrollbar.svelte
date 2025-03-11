@@ -4,6 +4,7 @@
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { spring } from "svelte/motion";
+  import { onDestroy } from "svelte";
 
   let scrollbar: HTMLElement;
   let customCursor: HTMLElement;
@@ -26,6 +27,7 @@
     if (!scrollbar) return;
 
     const { progress, limit } = controller;
+    // console.log("updateScrollbar", progress, limit);
 
     // Calculate thumb height based on viewport and content size
     const viewportHeight = window.innerHeight;
@@ -232,13 +234,21 @@
 
   // Function to refresh ScrollTrigger and update scrollbar
   function refreshScrollTrigger() {
+    console.log("refresh");
     if ($lenisController) {
       requestAnimationFrame(() => {
         $lenisController.resize();
+        updateScrollbar($lenisController);
       });
-      updateScrollbar($lenisController);
+
       ScrollTrigger.refresh(true); // true forces a recalculation of all ScrollTriggers
     }
+  }
+
+  // Function to handle Lenis scroll events
+  function handleLenisScroll(e: any) {
+    // console.log("handleLenisScroll", e);
+    updateScrollbar(e);
   }
 
   let scrollbarStyle = `
@@ -273,20 +283,79 @@
     // Update scrollbar on window resize
     window.addEventListener("resize", refreshScrollTrigger);
 
-    // Create a MutationObserver to detect DOM changes
-    const observer = new MutationObserver((mutations) => {
-      refreshScrollTrigger();
-      // Re-setup project container interactions when DOM changes
-      setupProjectContainerInteractions();
-    });
+    // Subscribe to Lenis scroll events
+    if ($lenisController) {
+      $lenisController.on("scroll", handleLenisScroll);
+    }
 
-    // Start observing the document body for DOM changes
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["style", "class"],
-    });
+    // Create a MutationObserver to detect significant DOM changes
+    let observer: MutationObserver | null = null;
+
+    const observeDOMChanges = () => {
+      if (observer) {
+        observer.disconnect(); // Stop observing previous target
+        observer = null;
+      }
+      // Select the target node (e.g., the main content container)
+      const targetNode = document.querySelector(".page-wrapper"); // Adjust the selector as needed
+
+      if (targetNode) {
+        observer = new MutationObserver((mutations) => {
+          let significantChange = false;
+
+          for (const mutation of mutations) {
+            if (
+              mutation.type === "childList" &&
+              mutation.addedNodes.length > 0
+            ) {
+              // Check for significant additions, like new sections or components
+              significantChange = Array.from(mutation.addedNodes).some(
+                (node) =>
+                  node.nodeType === Node.ELEMENT_NODE &&
+                  (node as Element).matches("section, div.some-large-component") // Adjust selectors as needed
+              );
+            } else if (
+              mutation.type === "attributes" &&
+              (mutation.attributeName === "class" ||
+                mutation.attributeName === "style")
+            ) {
+              // Check for class or style changes that might indicate a layout shift
+              const targetElement = mutation.target as Element;
+
+              if (
+                targetElement.matches(
+                  ".home-project-instance, section, div.some-layout-element"
+                )
+              ) {
+                // Adjust selectors as needed
+                significantChange = true;
+              }
+            }
+
+            if (significantChange) {
+              break; // Exit the loop if a significant change is found
+            }
+          }
+
+          if (significantChange) {
+            console.log("significantChange");
+            refreshScrollTrigger();
+            // Re-setup project container interactions when DOM changes
+            setupProjectContainerInteractions();
+          }
+        });
+
+        // Start observing the target node for configured mutations
+        observer.observe(targetNode, {
+          childList: true, // Watch for changes in the direct children
+          subtree: true, // Watch for changes in descendants
+          attributes: true, // Watch for attribute changes
+          attributeFilter: ["style", "class"], // Only watch for changes to style and class attributes
+        });
+      }
+    };
+
+    observeDOMChanges(); // Initial observation setup
 
     if (scrollbar) {
       scrollbar.addEventListener("mouseenter", () => {
@@ -300,7 +369,13 @@
 
     return () => {
       window.removeEventListener("resize", refreshScrollTrigger);
-      observer.disconnect();
+      if (observer) {
+        observer.disconnect();
+      }
+      // Unsubscribe from Lenis scroll events
+      if ($lenisController) {
+        $lenisController.off("scroll", handleLenisScroll);
+      }
     };
   });
 </script>
