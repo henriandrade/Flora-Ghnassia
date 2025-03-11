@@ -3,9 +3,13 @@
 
   const checkAutoplay = (video: HTMLVideoElement) => {
     const isPortrait = window.innerWidth < window.innerHeight;
-    const isMobile = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    const isMobile =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
 
     if (isPortrait || isMobile) {
+      console.log("playing");
       video.play();
     } else {
       video.pause();

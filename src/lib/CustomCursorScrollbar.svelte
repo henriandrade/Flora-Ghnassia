@@ -4,7 +4,6 @@
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { spring } from "svelte/motion";
-  import { onDestroy } from "svelte";
 
   let scrollbar: HTMLElement;
   let customCursor: HTMLElement;
@@ -115,7 +114,6 @@
     customCursorContainer.style.height = "100%";
     customCursorContainer.style.pointerEvents = "none";
     customCursorContainer.style.zIndex = "1400";
-    customCursorContainer.style.display = "block";
 
     // Add mousemove event listener to update cursor position
     document.addEventListener("mousemove", (e: Event) => {
@@ -217,16 +215,12 @@
             overwrite: true, // Ensures only the latest animation runs
           });
 
-          if (customCursorContainer) {
-            customCursorContainer.style.display = "none";
-          }
+          customCursorContainer.style.display = "none";
         });
 
         container.addEventListener("mouseleave", () => {
           projectInfo.style.transform = ""; // Or a specific default position if needed.
-          if (customCursorContainer) {
-            customCursorContainer.style.display = "block";
-          }
+          customCursorContainer.style.display = "block";
         });
       }
     });

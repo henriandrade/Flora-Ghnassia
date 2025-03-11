@@ -126,7 +126,6 @@
       // Remove the container transform
       container.removeAttribute("style");
       container.style.transformStyle = "flat";
-      console.log(container);
 
       const image = container.querySelector(
         ".home-project-image.original"
