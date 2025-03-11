@@ -1,5 +1,5 @@
 import Lenis from "lenis";
-import { readable } from "svelte/store";
+import { readable, writable } from "svelte/store";
 
 export const lenisController = readable<Lenis | null>(null, (set) => {
     const lenis = new Lenis({

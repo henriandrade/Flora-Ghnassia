@@ -41,9 +41,11 @@
 
 {#if webflowIsReady}
   <HeroTextAnimation />
-  <HomeImagesParallaxEffect />
   <MenuAnimation />
-  <DrawingCanvas />
   <WhatsNext />
-  <HandleVideos />
+  {#if window.location.pathname === "/"}
+    <HomeImagesParallaxEffect />
+    <DrawingCanvas />
+    <HandleVideos />
+  {/if}
 {/if}

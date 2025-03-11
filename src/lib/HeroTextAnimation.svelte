@@ -6,9 +6,6 @@
 
   const DURATION = 2;
 
-  // Register ScrollTrigger plugin
-  gsap.registerPlugin(ScrollTrigger);
-
   // Debounce function to limit how often a function can run
   function debounce(func: Function, wait: number) {
     let timeout: number | null = null;

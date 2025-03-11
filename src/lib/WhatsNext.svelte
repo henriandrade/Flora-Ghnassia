@@ -3,12 +3,22 @@
   import gsap from "gsap";
 
   onMount(() => {
-    const container = document.querySelector(".cta-row") as HTMLElement;
-    const whatsNext = document.querySelector(".next-links") as HTMLElement;
-    const sectionContainer = document.querySelector(
+    const whatsNextSection = document.querySelector(
+      ".whats-next-section"
+    ) as HTMLElement;
+    const container = whatsNextSection.querySelector(".cta-row") as HTMLElement;
+    const whatsNext = whatsNextSection.querySelector(
+      ".next-links"
+    ) as HTMLElement;
+    const sectionContainer = whatsNextSection.querySelector(
       ".section-container"
     ) as HTMLElement;
-    const ctaHeading = document.querySelector(".cta-heading") as HTMLElement;
+    const ctaHeading = whatsNextSection.querySelector(
+      ".cta-heading"
+    ) as HTMLElement;
+
+    // Check if section has black background
+    const hasBlackBg = whatsNextSection.classList.contains("black-bg");
 
     container.style.position = "relative";
     whatsNext.style.position = "relative";
@@ -41,7 +51,7 @@
       }
     });
 
-    const createArrow = () => {
+    const createArrow = (color: string = "#0B0B0B") => {
       const arrow = document.createElement("span");
       arrow.classList.add("next-link-arrow");
       arrow.style.cssText = `
@@ -56,8 +66,8 @@
       `;
       arrow.innerHTML = `
         <svg height='100%' viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0.0136719 2L18.0009 2L17.9874 19.9872" stroke="#0B0B0B" style="stroke:#0B0B0B;stroke:color(display-p3 0.0445 0.0445 0.0445);stroke-opacity:1;" stroke-width="2.37472" stroke-miterlimit="10"/>
-          <path d="M18.0007 2L2.12112 17.8677" stroke="#0B0B0B" style="stroke:#0B0B0B;stroke:color(display-p3 0.0445 0.0445 0.0445);stroke-opacity:1;" stroke-width="2.37472" stroke-miterlimit="10"/>
+          <path d="M0.0136719 2L18.0009 2L17.9874 19.9872" stroke="${color}" style="stroke:${color};stroke-opacity:1;" stroke-width="2.37472" stroke-miterlimit="10"/>
+          <path d="M18.0007 2L2.12112 17.8677" stroke="${color}" style="stroke:${color};stroke-opacity:1;" stroke-width="2.37472" stroke-miterlimit="10"/>
         </svg>
       `;
       return arrow;
@@ -73,14 +83,17 @@
         return;
       }
 
-      arrow = createArrow();
+      // Get the computed text color to match the arrow color
+      const computedStyle = window.getComputedStyle(h1);
+      const textColor = computedStyle.color;
+
+      arrow = createArrow(textColor);
       const originalText = h1.textContent || "";
       const wrapper = document.createElement("span");
       wrapper.classList.add("next-link-wrapper");
       wrapper.style.display = "flex";
       wrapper.style.alignItems = "center";
 
-      const computedStyle = window.getComputedStyle(h1);
       wrapper.style.justifyContent =
         computedStyle.textAlign === "center"
           ? "center"
@@ -144,9 +157,12 @@
 
     const createHoverBg = () => {
       const bg = document.createElement("div");
+      // Set background color based on whether section has black background
+      const bgColor = hasBlackBg ? "var(--jasmine)" : "var(--website--black)";
+
       bg.style.cssText = `
         position: absolute;
-        background-color: var(--jasmine);
+        background-color: ${bgColor};
         z-index: 0;
         opacity: 0;
         pointer-events: none;
@@ -191,13 +207,31 @@
     };
 
     const setLinkTextColor = (link: HTMLElement, hovering: boolean) => {
-      const color = hovering ? "var(--website--black)" : "";
+      // Set text color based on whether section has black background
+      const hoverColor = hasBlackBg
+        ? "var(--website--black)"
+        : "var(--website--white)";
+      const color = hovering ? hoverColor : "";
+
       link.querySelectorAll("*").forEach((el) => {
         const element = el as HTMLElement;
         element.style.color = hovering
           ? color
           : linkOriginalStyles.get(element) || "";
       });
+
+      // Update arrow color to match text color
+      const h1 = link.querySelector("h1") as HTMLElement;
+      if (h1) {
+        const arrow = h1.querySelector(".next-link-arrow svg") as SVGElement;
+        if (arrow) {
+          const paths = arrow.querySelectorAll("path");
+          paths.forEach((path) => {
+            path.setAttribute("stroke", hovering ? hoverColor : "currentColor");
+            path.style.stroke = hovering ? hoverColor : "currentColor";
+          });
+        }
+      }
     };
 
     const animateOutBackground = (bg: HTMLElement, mouseEvent: MouseEvent) => {
