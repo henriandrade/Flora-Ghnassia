@@ -3,7 +3,6 @@
   import { lenisController } from "../Lenis";
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
-  import { spring } from "svelte/motion";
 
   let scrollbar: HTMLElement;
   let customCursor: HTMLElement;
@@ -11,15 +10,6 @@
 
   // Register ScrollTrigger plugin
   gsap.registerPlugin(ScrollTrigger);
-
-  // Custom cursor spring effect
-  const cursorSpring = spring(
-    { x: 0, y: 0 },
-    {
-      stiffness: 0.15,
-      damping: 0.65,
-    }
-  );
 
   // Function to update custom scrollbar
   function updateScrollbar(controller: any) {
@@ -87,77 +77,6 @@
     if ($lenisController) {
       updateScrollbar($lenisController);
     }
-  }
-
-  // Function to initialize custom cursor
-  function initCustomCursor() {
-    if (!customCursor || !customCursorContainer) return;
-
-    // Set initial styles for custom cursor
-    customCursor.style.position = "fixed";
-    customCursor.style.pointerEvents = "none";
-    customCursor.style.zIndex = "1500";
-    customCursor.style.width = "1.5rem";
-    customCursor.style.height = "1.5rem";
-    customCursor.style.borderRadius = "50%";
-    customCursor.style.backgroundColor = "var(--jasmine)";
-    customCursor.style.mixBlendMode = "difference";
-    customCursor.style.transform = "translate(-50%, -50%)";
-    customCursor.style.transition =
-      "width 0.3s, height 0.3s, background-color 0.3s";
-
-    // Set container styles
-    customCursorContainer.style.position = "fixed";
-    customCursorContainer.style.top = "0";
-    customCursorContainer.style.left = "0";
-    customCursorContainer.style.width = "100%";
-    customCursorContainer.style.height = "100%";
-    customCursorContainer.style.pointerEvents = "none";
-    customCursorContainer.style.zIndex = "1400";
-
-    // Add mousemove event listener to update cursor position
-    document.addEventListener("mousemove", (e: Event) => {
-      const mouseEvent = e as MouseEvent;
-      // Update spring values
-      cursorSpring.set({ x: mouseEvent.clientX, y: mouseEvent.clientY });
-    });
-
-    // Subscribe to spring updates to move the cursor
-    cursorSpring.subscribe(({ x, y }) => {
-      if (customCursor) {
-        customCursor.style.left = `${x}px`;
-        customCursor.style.top = `${y}px`;
-      }
-    });
-
-    // Add event listeners for interactive elements
-    const interactiveElements = document.querySelectorAll(
-      'a, button, [role="button"], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-
-    interactiveElements.forEach((element) => {
-      element.addEventListener("mouseenter", () => {
-        customCursor.style.width = "2.5rem";
-        customCursor.style.height = "2.5rem";
-        customCursor.style.backgroundColor =
-          "var(--jasmine-hover, var(--jasmine))";
-      });
-
-      element.addEventListener("mouseleave", () => {
-        customCursor.style.width = "1.5rem";
-        customCursor.style.height = "1.5rem";
-        customCursor.style.backgroundColor = "var(--jasmine)";
-      });
-    });
-
-    // Handle cursor visibility when mouse leaves/enters the window
-    document.addEventListener("mouseenter", () => {
-      customCursor.style.opacity = "1";
-    });
-
-    document.addEventListener("mouseleave", () => {
-      customCursor.style.opacity = "0";
-    });
   }
 
   // Function to handle project container interactions
@@ -265,10 +184,6 @@
     if (scrollbar) {
       scrollbar.style.cssText = scrollbarStyle;
       initScrollbar();
-    }
-
-    if (customCursor && customCursorContainer) {
-      initCustomCursor();
     }
 
     // Setup project container interactions
