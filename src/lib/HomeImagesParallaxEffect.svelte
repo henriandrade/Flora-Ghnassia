@@ -28,9 +28,6 @@
       const projectInfo = container.querySelector(
         ".home-project-info"
       ) as HTMLElement;
-      const customCursorContainer = document.querySelector(
-        ".custom-cursor-container"
-      ) as HTMLElement;
 
       if (projectInfo) {
         // Set initial position properties for each info element
@@ -51,7 +48,7 @@
           });
         }
 
-        container.addEventListener("mousemove", (e) => {
+        container.addEventListener("mousemove", (e: MouseEvent) => {
           const rect = container.getBoundingClientRect();
           const x = e.clientX - rect.left; // X position within the container
           const y = e.clientY - rect.top; // Y position within the container
@@ -74,16 +71,10 @@
             ease: "elastic.out(1, 0.75)", // Spring effect - adjust values for different feel
             overwrite: true, // Ensures only the latest animation runs
           });
-          if (customCursorContainer) {
-            customCursorContainer.style.display = "none";
-          }
         });
 
         container.addEventListener("mouseleave", () => {
           projectInfo.style.transform = ""; // Or a specific default position if needed.
-          if (customCursorContainer) {
-            customCursorContainer.style.display = "block";
-          }
         });
       }
 
