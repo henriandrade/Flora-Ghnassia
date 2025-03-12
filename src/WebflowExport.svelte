@@ -10,7 +10,7 @@
   import ScrollTrigger from "gsap/ScrollTrigger";
   import WhatsNext from "@/lib/WhatsNext.svelte";
   import HandleVideos from "@/lib/HandleVideos.svelte";
-  import CustomCursorScrollbar from "@/lib/CustomCursorScrollbar.svelte";
+  import CustomScrollbar from "@/lib/CustomScrollbar.svelte";
 
   let webflowIsReady = false;
 
@@ -44,7 +44,7 @@
   <HeroTextAnimation />
   <MenuAnimation />
   <WhatsNext />
-  <CustomCursorScrollbar />
+  <CustomScrollbar />
   {#if window.location.pathname === "/"}
     <HomeImagesParallaxEffect />
     <DrawingCanvas />

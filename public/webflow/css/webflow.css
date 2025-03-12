@@ -54,6 +54,8 @@ body {
   font-size: 14px;
   line-height: 20px;
   color: #333;
+  overflow: hidden;
+  touch-action: none;
 }
 img {
   max-width: 100%;

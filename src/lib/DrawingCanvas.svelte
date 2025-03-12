@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { lenisController } from "@/Lenis";
   import { onMount } from "svelte";
 
   let canvasElement: HTMLElement;
@@ -7,6 +8,7 @@
   let points: { x: number; y: number; timestamp: number }[] = [];
   let lastX = -1;
   let lastY = -1;
+  let isDrawing = false; // Flag to indicate if drawing is active on mobile
 
   // Settings for the line
   const LINE_WIDTH = 10; // Thicker line
@@ -45,22 +47,46 @@
     return length;
   }
 
-  function draw(event: PointerEvent) {
-    const pos = getPointerPosition(event);
-
-    // Add point to history
-    points.push({ x: pos.x, y: pos.y, timestamp: Date.now() });
-
-    // Keep only a reasonable number of points
-    if (points.length > MAX_POINTS) {
-      points.shift();
+  function startDraw(event: PointerEvent) {
+    // On mobile, start drawing only on touchstart
+    if (event.pointerType === "touch") {
+      isDrawing = true;
+      if ($lenisController) {
+        $lenisController.stop();
+      }
     }
+    draw(event);
+  }
 
-    // Redraw the canvas
-    redrawCanvas();
+  function draw(event: PointerEvent) {
+    // Always draw on desktop, but only draw on mobile if isDrawing is true
+    if (event.pointerType === "mouse" || isDrawing) {
+      const pos = getPointerPosition(event);
 
-    lastX = pos.x;
-    lastY = pos.y;
+      // Add point to history
+      points.push({ x: pos.x, y: pos.y, timestamp: Date.now() });
+
+      // Keep only a reasonable number of points
+      if (points.length > MAX_POINTS) {
+        points.shift();
+      }
+
+      // Redraw the canvas
+      redrawCanvas();
+
+      lastX = pos.x;
+      lastY = pos.y;
+    }
+  }
+
+  function endDraw(event: PointerEvent) {
+    // Only relevant for touch events to stop drawing
+    if (event.pointerType === "touch") {
+      isDrawing = false;
+      if ($lenisController) {
+        $lenisController.start();
+      }
+    }
   }
 
   function redrawCanvas() {
@@ -222,8 +248,11 @@
     // Hide the cursor
     canvasElement.style.cursor = "none";
 
-    // Add event listeners - only need pointermove for continuous drawing
-    canvas.addEventListener("pointermove", draw);
+    // Add event listeners
+    canvas.addEventListener("pointerdown", startDraw); // Always listen for pointerdown
+    canvas.addEventListener("pointermove", draw); // Always listen for pointermove
+    canvas.addEventListener("pointerup", endDraw); // Listen for pointerup to stop drawing on touch devices
+    canvas.addEventListener("pointercancel", endDraw); // Handle pointercancel
     window.addEventListener("resize", resizeCanvas);
 
     const downloadBtn = document.querySelector("#download-btn");
@@ -240,7 +269,10 @@
     }
 
     return () => {
+      canvas.removeEventListener("pointerdown", startDraw);
       canvas.removeEventListener("pointermove", draw);
+      canvas.removeEventListener("pointerup", endDraw);
+      canvas.removeEventListener("pointercancel", endDraw); // Clean up pointercancel
       window.removeEventListener("resize", resizeCanvas);
 
       if (downloadBtn && resetBtn) {

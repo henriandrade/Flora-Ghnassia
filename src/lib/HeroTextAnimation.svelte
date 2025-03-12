@@ -4,7 +4,9 @@
   import { onMount } from "svelte";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-  const DURATION = 2;
+  const DURATION = 1.5;
+  const STAGGER_EACH = 0.025;
+  const HOVERING_DURATION = 0.125;
 
   // Debounce function to limit how often a function can run
   function debounce(func: Function, wait: number) {
@@ -19,7 +21,7 @@
     };
   }
 
-  onMount(() => {
+  function setupAnimation() {
     // Store references for cleanup
     let splitInstances: SplitType[] = [];
     let heroObserver: ResizeObserver;
@@ -59,29 +61,25 @@
       const tl = gsap.timeline();
 
       tl.from(floraSplit.chars || [], {
-        y: "-100%",
-        opacity: 0,
+        y: "-17.5svh",
         duration: DURATION,
-        ease: "power5.out",
         stagger: {
-          amount: 0.8,
-          ease: "power2.inOut",
+          ease: "power4.out",
+          each: STAGGER_EACH,
         },
       });
 
       tl.from(
         ghnassiaSplit.chars || [],
         {
-          y: "-100%",
-          opacity: 0,
+          y: "-17.5svh",
           duration: DURATION,
-          ease: "power5.out",
           stagger: {
-            amount: 0.8,
-            ease: "power1.out",
+            ease: "power4.out",
+            each: STAGGER_EACH,
           },
         },
-        "-=65%"
+        "-=95%"
       );
 
       tl.eventCallback("onComplete", () => {
@@ -98,9 +96,9 @@
             // Add mouse enter event
             char.addEventListener("mouseenter", () => {
               gsap.to(char, {
-                y: "-2rem",
-                duration: 0.3,
-                ease: "power5.out",
+                y: "-1.5rem",
+                ease: "power4.out",
+                duration: HOVERING_DURATION,
               });
             });
 
@@ -108,8 +106,8 @@
             const resetCharPosition = () => {
               gsap.to(char, {
                 y: "0%",
-                duration: 0.3,
-                ease: "power5.out",
+                ease: "power4.in",
+                duration: HOVERING_DURATION,
               });
             };
 
@@ -127,9 +125,6 @@
         processingElements.set(heroId, false);
       }, 100);
     };
-
-    // Initialize animation
-    initHeroNameAnimation();
 
     // Set up ResizeObserver for hero container with flag check
     const heroContainer = document.querySelector(".home-hero-container");
@@ -233,8 +228,10 @@
               y: "0%",
               duration: duration,
               delay: delay,
-              stagger: 0.1, // Add stagger effect between lines
-              ease: "power3.out",
+              stagger: {
+                each: 0.2,
+                ease: "power5.in",
+              },
               scrollTrigger: {
                 trigger: textElement,
                 start: "top bottom-=100",
@@ -255,7 +252,6 @@
     textElementsToAnimate.forEach((textElement) => {
       // Initialize animation for this element
       textElement.style.position = "relative";
-      initTextAnimation(textElement);
 
       // Set up ResizeObserver for this element
       const textResizeObserver = new ResizeObserver(
@@ -298,5 +294,13 @@
         document.querySelectorAll(".hero-flora, .hero-ghnassia")
       );
     };
+  }
+
+  let isMounted = false;
+  onMount(() => {
+    if (!isMounted) {
+      setupAnimation();
+      isMounted = true;
+    }
   });
 </script>

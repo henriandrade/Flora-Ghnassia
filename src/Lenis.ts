@@ -5,8 +5,12 @@ export const lenisController = readable<Lenis | null>(null, (set) => {
     const lenis = new Lenis({
         duration: 1.2,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        touchMultiplier: 2,
+        syncTouch: true,
+        syncTouchLerp: 0.025,
+        touchInertiaMultiplier: 2,
+        touchMultiplier: 1.25,
         infinite: false,
+        lerp: 0.085,
     });
 
     function raf(time: number) {

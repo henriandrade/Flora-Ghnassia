@@ -191,18 +191,37 @@
     };
 
     const setLinkBorders = (link: HTMLElement, hovering: boolean) => {
-      link.style.borderTopColor = hovering
+      const isLastLink = !link.nextElementSibling;
+
+      const targetTopBorderColor = hovering
         ? "transparent"
         : "var(--website--white)";
-      link.style.borderBottomColor = hovering
+      const targetBottomBorderColor = hovering
         ? "transparent"
         : "var(--website--white)";
 
+      gsap.to(link, {
+        borderTopColor: targetTopBorderColor,
+        duration: 0.4,
+        ease: "power3.out",
+      });
+
+      // Only set the bottom border if it is the last link
+      if (isLastLink) {
+        gsap.to(link, {
+          borderBottomColor: targetBottomBorderColor,
+          duration: 0.4,
+          ease: "power3.out",
+        });
+      }
+
       const nextSibling = link.nextElementSibling;
       if (nextSibling && nextSibling.classList.contains("next-link")) {
-        (nextSibling as HTMLElement).style.borderTopColor = hovering
-          ? "transparent"
-          : "var(--website--white)";
+        gsap.to(nextSibling, {
+          borderTopColor: targetTopBorderColor,
+          duration: 0.4,
+          ease: "power3.out",
+        });
       }
     };
 
