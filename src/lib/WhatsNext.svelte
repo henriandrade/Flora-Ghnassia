@@ -26,11 +26,27 @@
     const linkOriginalText = new Map<HTMLElement, string>();
     const linkOriginalStyles = new Map<HTMLElement, string>();
 
-    const links = Array.from(whatsNext.querySelectorAll(".next-link"));
+    let links = Array.from(whatsNext.querySelectorAll(".next-link"));
 
-    // Pre-calculate and store original link data
+    // Pre-calculate and store original link data, and handle surprise links
     links.forEach((link) => {
       const linkEl = link as HTMLElement;
+
+      // Handle surprise links
+      if (linkEl.hasAttribute("surprise-links")) {
+        const surpriseLinksAttr = linkEl.getAttribute("surprise-links");
+        if (surpriseLinksAttr) {
+          const surpriseLinks = surpriseLinksAttr.slice(1, -1).split(",");
+          if (surpriseLinks.length > 0) {
+            const randomIndex = Math.floor(
+              Math.random() * surpriseLinks.length
+            );
+            const randomProject = surpriseLinks[randomIndex];
+            linkEl.setAttribute("href", `/projects/${randomProject}`);
+          }
+        }
+      }
+
       linkEl.style.position = "relative";
       linkEl.style.zIndex = "1";
       linkEl.style.height = `${linkEl.offsetHeight}px`;
