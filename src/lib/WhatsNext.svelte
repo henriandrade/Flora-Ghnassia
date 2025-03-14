@@ -146,7 +146,7 @@
                 : "flex-start"
           }
         ">
-          ${createArrowTemplate(textColor)}
+          ${createArrowTemplate(hoverTextColor)}
           ${originalText}
         </span>
       `;
@@ -155,7 +155,7 @@
       gsap.fromTo(
         arrow,
         { opacity: 0 },
-        { opacity: 1, duration: 0.1, delay: 0.2, ease: "power5.out" }
+        { opacity: 1, duration: 0.4, ease: "power5.in" }
       );
     };
 
@@ -233,9 +233,12 @@
 
     const setLinkBorders = (link: HTMLElement, hovering: boolean) => {
       const isLastLink = !link.nextElementSibling;
+      const isBlackBg = link.parentElement?.classList.contains("black-bg");
       const targetBorderColor = hovering
         ? "transparent"
-        : "var(--website--white)";
+        : isBlackBg
+          ? "var(--website--white)"
+          : "var(--website--black)";
 
       gsap.to(link, {
         borderTopColor: targetBorderColor,
@@ -265,27 +268,13 @@
     const setLinkTextColor = (link: HTMLElement, hovering: boolean) => {
       const color = hovering ? hoverTextColor : "";
 
-      gsap.to(link.querySelectorAll("*"), {
+      gsap.to(link.querySelectorAll("h1"), {
         color: (index, element) =>
           hovering ? color : linkOriginalStyles.get(element) || "",
-        duration: 0.2,
-        ease: "power5.out",
+        duration: 0.025,
+        delay: 0,
+        ease: "power4.in",
       });
-
-      // Update arrow color to match text color
-      const h1 = link.querySelector("h1") as HTMLElement;
-      if (h1) {
-        const arrow = h1.querySelector(".next-link-arrow svg") as SVGElement;
-        if (arrow) {
-          const paths = arrow.querySelectorAll("path");
-          gsap.to(paths, {
-            stroke: hovering ? hoverTextColor : "currentColor",
-            duration: 0.16,
-            delay: 0.15,
-            ease: "power5.out",
-          });
-        }
-      }
     };
 
     const animateOutBackground = (bg: HTMLElement, mouseEvent: MouseEvent) => {
@@ -340,14 +329,14 @@
           mouseYRelative / linkHeight < 0.5 ? "down" : "up";
 
         updateHeadingVisibility(true);
+        setLinkTextColor(target, true);
         addArrowToText(target);
         setLinkBorders(target, true);
-        setLinkTextColor(target, true);
 
         if (activeLink) {
+          setLinkTextColor(activeLink, false);
           fadeOutArrow(activeLink);
           setLinkBorders(activeLink, false);
-          setLinkTextColor(activeLink, false);
         }
 
         if (isDirectNeighbor && activeBackgrounds.length > 0) {
@@ -397,7 +386,7 @@
 
         activeLink = target;
         hoverTimeout = null;
-      }, 80);
+      }, 70);
     };
 
     const handleMouseLeave = (e: MouseEvent) => {
