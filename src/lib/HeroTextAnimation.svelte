@@ -234,8 +234,9 @@
               },
               scrollTrigger: {
                 trigger: textElement,
-                start: "top bottom-=100",
+                start: "top bottom",
                 toggleActions: "play reset play reset",
+                markers: true,
               },
             }
           );
@@ -265,6 +266,8 @@
           }
         }, 300)
       );
+
+      initTextAnimation(textElement);
 
       textResizeObserver.observe(textElement.parentElement!);
       resizeObservers.push(textResizeObserver);
