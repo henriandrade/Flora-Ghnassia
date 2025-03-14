@@ -129,8 +129,8 @@
             url="https://cdn.prod.website-files.com/67a0fb16e98014c2e8572448/67c0f92a0f6906a8aa87c079_flora-shadow.png"
           />
         </T.Mesh>
-        <T.Mesh name="flora-frame" position={[0, 2.4, -5]} bind:ref={frameRef}>
-          <T.PlaneGeometry args={[2.25, 3.5]} />
+        <T.Mesh name="flora-frame" position={[0, 2, -5]} bind:ref={frameRef}>
+          <T.PlaneGeometry args={[3.75, 5.5]} />
           <ImageMaterial
             side={2}
             alphaSmoothing={1}
