@@ -233,10 +233,9 @@
 
     const setLinkBorders = (link: HTMLElement, hovering: boolean) => {
       const isLastLink = !link.nextElementSibling;
-      const isBlackBg = link.parentElement?.classList.contains("black-bg");
       const targetBorderColor = hovering
         ? "transparent"
-        : isBlackBg
+        : hasBlackBg
           ? "var(--website--white)"
           : "var(--website--black)";
 
