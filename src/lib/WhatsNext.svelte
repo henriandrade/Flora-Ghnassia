@@ -3,9 +3,12 @@
   import gsap from "gsap";
 
   onMount(() => {
+    // Cache DOM elements once
     const whatsNextSection = document.querySelector(
       ".whats-next-section"
     ) as HTMLElement;
+    if (!whatsNextSection) return; // Early return if element not found
+
     const container = whatsNextSection.querySelector(".cta-row") as HTMLElement;
     const whatsNext = whatsNextSection.querySelector(
       ".next-links"
@@ -17,16 +20,57 @@
       ".cta-heading"
     ) as HTMLElement;
 
+    if (!container || !whatsNext) return; // Early return if required elements not found
+
     // Check if section has black background
     const hasBlackBg = whatsNextSection.classList.contains("black-bg");
+    const hoverBgColor = hasBlackBg
+      ? "var(--jasmine)"
+      : "var(--website--black)";
+    const hoverTextColor = hasBlackBg
+      ? "var(--website--black)"
+      : "var(--website--white)";
 
+    // Set static styles once
     container.style.position = "relative";
     whatsNext.style.position = "relative";
 
     const linkOriginalText = new Map<HTMLElement, string>();
     const linkOriginalStyles = new Map<HTMLElement, string>();
 
-    let links = Array.from(whatsNext.querySelectorAll(".next-link"));
+    // Get all links once
+    const links = Array.from(whatsNext.querySelectorAll(".next-link"));
+
+    // Create arrow template for reuse
+    const createArrowTemplate = (color: string = "#0B0B0B") => {
+      return `
+        <span class="next-link-arrow" style="
+          display: inline-flex;
+          align-items: center;
+          vertical-align: middle;
+          height: 0.8em;
+          margin-right: 0.5em;
+          position: relative;
+          top: 0.05em;
+          opacity: 0;
+        ">
+          <svg height='100%' viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.0136719 2L18.0009 2L17.9874 19.9872" stroke="${color}" style="stroke:${color};stroke-opacity:1;" stroke-width="2.37472" stroke-miterlimit="10"/>
+            <path d="M18.0007 2L2.12112 17.8677" stroke="${color}" style="stroke:${color};stroke-opacity:1;" stroke-width="2.37472" stroke-miterlimit="10"/>
+          </svg>
+        </span>
+      `;
+    };
+
+    // Pre-calculate section dimensions for background positioning
+    let sectionRect: DOMRect | null = null;
+    let containerRect: DOMRect | null = null;
+    let leftOffset: number | null = null;
+    if (sectionContainer) {
+      sectionRect = sectionContainer.getBoundingClientRect();
+      containerRect = container.getBoundingClientRect();
+      leftOffset = containerRect.left - sectionRect.left;
+    }
 
     // Pre-calculate and store original link data, and handle surprise links
     links.forEach((link) => {
@@ -67,64 +111,51 @@
       }
     });
 
-    const createArrow = (color: string = "#0B0B0B") => {
-      const arrow = document.createElement("span");
-      arrow.classList.add("next-link-arrow");
-      arrow.style.cssText = `
-        display: inline-flex;
-        align-items: center;
-        vertical-align: middle;
-        height: 0.8em;
-        margin-right: 0.5em;
-        position: relative;
-        top: 0.05em;
-        opacity: 0;
-      `;
-      arrow.innerHTML = `
-        <svg height='100%' viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0.0136719 2L18.0009 2L17.9874 19.9872" stroke="${color}" style="stroke:${color};stroke-opacity:1;" stroke-width="2.37472" stroke-miterlimit="10"/>
-          <path d="M18.0007 2L2.12112 17.8677" stroke="${color}" style="stroke:${color};stroke-opacity:1;" stroke-width="2.37472" stroke-miterlimit="10"/>
-        </svg>
-      `;
-      return arrow;
-    };
-
     const addArrowToText = (element: HTMLElement) => {
       const h1 = element.querySelector("h1") as HTMLElement;
       if (!h1) return;
 
       let arrow = h1.querySelector(".next-link-arrow") as HTMLElement;
       if (arrow) {
-        gsap.to(arrow, { opacity: 1, duration: 0.3, ease: "power3.inOut" });
+        gsap.to(arrow, {
+          opacity: 1,
+          duration: 0.2,
+          delay: 0.15,
+          ease: "power5.out",
+        });
         return;
       }
 
       // Get the computed text color to match the arrow color
       const computedStyle = window.getComputedStyle(h1);
       const textColor = computedStyle.color;
+      const textAlign = computedStyle.textAlign;
 
-      arrow = createArrow(textColor);
       const originalText = h1.textContent || "";
-      const wrapper = document.createElement("span");
-      wrapper.classList.add("next-link-wrapper");
-      wrapper.style.display = "flex";
-      wrapper.style.alignItems = "center";
 
-      wrapper.style.justifyContent =
-        computedStyle.textAlign === "center"
-          ? "center"
-          : computedStyle.textAlign === "right"
-            ? "flex-end"
-            : "flex-start";
+      // Create wrapper with arrow and text
+      h1.innerHTML = `
+        <span class="next-link-wrapper" style="
+          display: flex;
+          align-items: center;
+          justify-content: ${
+            textAlign === "center"
+              ? "center"
+              : textAlign === "right"
+                ? "flex-end"
+                : "flex-start"
+          }
+        ">
+          ${createArrowTemplate(textColor)}
+          ${originalText}
+        </span>
+      `;
 
-      h1.innerHTML = "";
-      wrapper.append(arrow, document.createTextNode(originalText));
-      h1.appendChild(wrapper);
-
+      arrow = h1.querySelector(".next-link-arrow") as HTMLElement;
       gsap.fromTo(
         arrow,
         { opacity: 0 },
-        { opacity: 1, duration: 0.3, ease: "power3.inOut" }
+        { opacity: 1, duration: 0.1, delay: 0.2, ease: "power5.out" }
       );
     };
 
@@ -147,7 +178,6 @@
       });
     };
 
-    // Modified fadeOutAllArrows to prevent premature removal
     const fadeOutAllArrows = () => {
       const allArrows = document.querySelectorAll(".next-link-arrow");
 
@@ -173,21 +203,16 @@
 
     const createHoverBg = () => {
       const bg = document.createElement("div");
-      // Set background color based on whether section has black background
-      const bgColor = hasBlackBg ? "var(--jasmine)" : "var(--website--black)";
 
       bg.style.cssText = `
         position: absolute;
-        background-color: ${bgColor};
+        background-color: ${hoverBgColor};
         z-index: 0;
         opacity: 0;
         pointer-events: none;
       `;
 
-      if (sectionContainer) {
-        const sectionRect = sectionContainer.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        const leftOffset = containerRect.left - sectionRect.left;
+      if (sectionContainer && sectionRect && leftOffset) {
         bg.style.width = `${sectionRect.width}px`;
         bg.style.left = `${-leftOffset}px`;
       } else {
@@ -208,51 +233,43 @@
 
     const setLinkBorders = (link: HTMLElement, hovering: boolean) => {
       const isLastLink = !link.nextElementSibling;
-
-      const targetTopBorderColor = hovering
-        ? "transparent"
-        : "var(--website--white)";
-      const targetBottomBorderColor = hovering
+      const targetBorderColor = hovering
         ? "transparent"
         : "var(--website--white)";
 
       gsap.to(link, {
-        borderTopColor: targetTopBorderColor,
-        duration: 0.4,
-        ease: "power3.out",
+        borderTopColor: targetBorderColor,
+        duration: 0.1,
+        ease: "linear",
       });
 
       // Only set the bottom border if it is the last link
       if (isLastLink) {
         gsap.to(link, {
-          borderBottomColor: targetBottomBorderColor,
-          duration: 0.4,
-          ease: "power3.out",
+          borderBottomColor: targetBorderColor,
+          duration: 0.1,
+          ease: "linear",
         });
       }
 
       const nextSibling = link.nextElementSibling;
       if (nextSibling && nextSibling.classList.contains("next-link")) {
         gsap.to(nextSibling, {
-          borderTopColor: targetTopBorderColor,
-          duration: 0.4,
-          ease: "power3.out",
+          borderTopColor: targetBorderColor,
+          duration: 0.1,
+          ease: "linear",
         });
       }
     };
 
     const setLinkTextColor = (link: HTMLElement, hovering: boolean) => {
-      // Set text color based on whether section has black background
-      const hoverColor = hasBlackBg
-        ? "var(--website--black)"
-        : "var(--website--white)";
-      const color = hovering ? hoverColor : "";
+      const color = hovering ? hoverTextColor : "";
 
-      link.querySelectorAll("*").forEach((el) => {
-        const element = el as HTMLElement;
-        element.style.color = hovering
-          ? color
-          : linkOriginalStyles.get(element) || "";
+      gsap.to(link.querySelectorAll("*"), {
+        color: (index, element) =>
+          hovering ? color : linkOriginalStyles.get(element) || "",
+        duration: 0.2,
+        ease: "power5.out",
       });
 
       // Update arrow color to match text color
@@ -261,9 +278,11 @@
         const arrow = h1.querySelector(".next-link-arrow svg") as SVGElement;
         if (arrow) {
           const paths = arrow.querySelectorAll("path");
-          paths.forEach((path) => {
-            path.setAttribute("stroke", hovering ? hoverColor : "currentColor");
-            path.style.stroke = hovering ? hoverColor : "currentColor";
+          gsap.to(paths, {
+            stroke: hovering ? hoverTextColor : "currentColor",
+            duration: 0.16,
+            delay: 0.15,
+            ease: "power5.out",
           });
         }
       }
@@ -402,7 +421,6 @@
         updateHeadingVisibility(false);
         setLinkBorders(activeLink, false);
         setLinkTextColor(activeLink, false);
-        // activeLink = null; // Don't nullify here, wait for container leave
       }
     };
 
@@ -418,6 +436,7 @@
       activeBackgrounds.forEach((bg) => animateOutBackground(bg, e));
       updateHeadingVisibility(false);
       fadeOutAllArrows(); // Now safe to call because we are sure mouse is outside
+
       if (activeLink) {
         setLinkBorders(activeLink, false);
         setLinkTextColor(activeLink, false);
