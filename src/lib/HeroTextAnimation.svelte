@@ -236,7 +236,6 @@
                 trigger: textElement,
                 start: "top bottom",
                 toggleActions: "play reset play reset",
-                markers: true,
               },
             }
           );
@@ -267,7 +266,13 @@
         }, 300)
       );
 
-      initTextAnimation(textElement);
+      const documentTextObserver = new ResizeObserver(
+        debounce(() => {
+          initTextAnimation(textElement);
+        }, 300)
+      );
+
+      documentTextObserver.observe(document.body);
 
       textResizeObserver.observe(textElement.parentElement!);
       resizeObservers.push(textResizeObserver);
