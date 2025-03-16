@@ -7,8 +7,8 @@ export const lenisController = readable<Lenis | null>(null, (set) => {
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         syncTouch: true,
         syncTouchLerp: 0.025,
-        touchInertiaMultiplier: 2,
-        touchMultiplier: 1.25,
+        touchInertiaMultiplier: 5,
+        touchMultiplier: 2,
         infinite: false,
         lerp: 0.085,
     });
