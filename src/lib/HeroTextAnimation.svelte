@@ -50,6 +50,19 @@
         return;
       }
 
+      // Get the computed style of the floraSpan to extract the initial Y value.
+      const floraStyle = window.getComputedStyle(floraSpan);
+      const transformValue = floraStyle.transform;
+
+      let translateY = "0px"; // Default value
+      if (transformValue !== "none") {
+        const matrixValues = transformValue.match(/matrix.*\((.+)\)/);
+        if (matrixValues && matrixValues[1]) {
+          const values = matrixValues[1].split(", ");
+          translateY = values[5] || "0px"; // the 6th value is translateY
+        }
+      }
+
       // Apply SplitType to both spans
       const floraSplit = new SplitType(floraSpan, { types: "chars" });
       const ghnassiaSplit = new SplitType(ghnassiaSpan, { types: "chars" });
@@ -58,10 +71,16 @@
       splitInstances.push(floraSplit, ghnassiaSplit);
 
       // Create timeline for animation
-      const tl = gsap.timeline();
+      const tl = gsap.timeline({
+        paused: true,
+      });
+      tl.eventCallback("onStart", () => {
+        floraSpan.style.transform = "translateY(0)";
+        ghnassiaSpan.style.transform = "translateY(0)";
+      });
 
       tl.from(floraSplit.chars || [], {
-        y: "-17.5svh",
+        y: `${translateY}`,
         duration: DURATION,
         stagger: {
           ease: "power4.out",
@@ -72,7 +91,7 @@
       tl.from(
         ghnassiaSplit.chars || [],
         {
-          y: "-17.5svh",
+          y: `${translateY}`,
           duration: DURATION,
           stagger: {
             ease: "power4.out",
@@ -119,6 +138,8 @@
         // Reset the flag after animations are complete
         processingElements.set(heroId, false);
       });
+
+      tl.play();
 
       // If animation doesn't complete for some reason, reset the flag
       setTimeout(() => {
