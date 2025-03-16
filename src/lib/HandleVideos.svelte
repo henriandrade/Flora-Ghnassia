@@ -20,12 +20,17 @@
     const videos =
       document.querySelectorAll<HTMLVideoElement>(".fun-video video");
 
-    videos.forEach((video) => {
+    videos.forEach((video, index) => {
       video.pause();
       video.muted = true; // Ensure video is muted
 
       // Initial check for autoplay
       checkAutoplay(video);
+
+      // If it's the third video, set currentTime to 3
+      if (index === 2) {
+        video.currentTime = 4;
+      }
 
       // Play on hover for desktop
       video.parentElement?.addEventListener("mouseenter", () => {

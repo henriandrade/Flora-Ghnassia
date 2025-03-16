@@ -1413,6 +1413,7 @@ li {
   touch-action: none;
   font-family: RM Neue, Arial, sans-serif;
   font-size: .95svw;
+  line-height: 1.35svw;
 }
 
 .hero-bg {
@@ -4158,6 +4159,7 @@ li {
   width: 100%;
   margin-top: 2rem;
   margin-bottom: 2rem;
+  font-size: 2rem;
   font-weight: 400;
 }
 
@@ -4390,6 +4392,8 @@ li {
   margin-top: 0;
   margin-bottom: -.5rem;
   padding-top: .25rem;
+  font-size: 2.5rem;
+  line-height: 1.15em;
   overflow: hidden;
 }
 
@@ -4637,7 +4641,7 @@ li {
   min-width: 85%;
 }
 
-.fun-image-03 {
+.fun-video-03 {
   width: 85%;
   margin-top: 15%;
   position: relative;
@@ -4785,6 +4789,25 @@ li {
     margin-right: -1.25svw;
   }
 
+  .home-project-instance._01 {
+    width: 80%;
+    margin-right: -25%;
+  }
+
+  .home-project-instance._02, .home-project-instance._03 {
+    width: 80%;
+    margin-right: 4%;
+  }
+
+  .home-project-instance._03b {
+    width: 80%;
+    margin-right: -16%;
+  }
+
+  .about-heading {
+    font-size: 3.5rem;
+  }
+
   .flora-heading {
     height: 20rem;
     padding-top: 4.2rem;
@@ -4797,6 +4820,10 @@ li {
 
   .hero-flora {
     font-size: 17.25svw;
+  }
+
+  .fun-video-03 {
+    aspect-ratio: 1;
   }
 }
 
@@ -5466,7 +5493,7 @@ li {
     min-width: 100%;
   }
 
-  .fun-image-03 {
+  .fun-video-03 {
     width: 100%;
     margin-top: 0%;
   }
