@@ -224,6 +224,20 @@
     redrawCanvas();
   }
 
+  function checkCanvasVisibility() {
+    if (!canvasElement) return;
+
+    const rect = canvasElement.getBoundingClientRect();
+    if (
+      rect.bottom < 0 ||
+      rect.top > window.innerHeight ||
+      rect.right < 0 ||
+      rect.left > window.innerWidth
+    ) {
+      resetCanvas();
+    }
+  }
+
   onMount(() => {
     canvasElement = document.querySelector(".drawing-canvas") as HTMLElement;
     if (!canvasElement) {
@@ -258,6 +272,19 @@
     const downloadBtn = document.querySelector("#download-btn");
     const resetBtn = document.querySelector("#reset-btn");
 
+    // Observe canvas visibility
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0].isIntersecting) {
+          // The canvas is not visible, so clear it
+          resetCanvas();
+        }
+      },
+      { threshold: 0 }
+    ); // Trigger as soon as any part of the canvas is out of view
+
+    observer.observe(canvasElement);
+
     if (downloadBtn && resetBtn) {
       downloadBtn.addEventListener("click", downloadCanvas);
 
@@ -274,6 +301,8 @@
       canvas.removeEventListener("pointerup", endDraw);
       canvas.removeEventListener("pointercancel", endDraw); // Clean up pointercancel
       window.removeEventListener("resize", resizeCanvas);
+
+      observer.disconnect();
 
       if (downloadBtn && resetBtn) {
         downloadBtn.removeEventListener("click", downloadCanvas);
