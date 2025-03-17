@@ -256,7 +256,7 @@
               scrollTrigger: {
                 trigger: textElement,
                 start: "top bottom",
-                toggleActions: "play reset play reset",
+                toggleActions: "play none none none",
               },
             }
           );
