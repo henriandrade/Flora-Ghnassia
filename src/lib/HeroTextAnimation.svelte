@@ -2,10 +2,9 @@
   import SplitType from "split-type";
   import gsap from "gsap";
   import { onMount } from "svelte";
-  import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-  const DURATION = 1.5;
-  const STAGGER_EACH = 0.025;
+  const DURATION = 1.06;
+  const STAGGER_EACH = 0.024;
   const HOVERING_DURATION = 0.125;
 
   // Debounce function to limit how often a function can run
@@ -82,8 +81,8 @@
       tl.from(floraSplit.chars || [], {
         y: `${translateY}`,
         duration: DURATION,
+        ease: "Power4.out",
         stagger: {
-          ease: "power4.out",
           each: STAGGER_EACH,
         },
       });
@@ -93,12 +92,12 @@
         {
           y: `${translateY}`,
           duration: DURATION,
+          ease: "Power4.out",
           stagger: {
-            ease: "power4.out",
             each: STAGGER_EACH,
           },
         },
-        "-=95%"
+        "-=78%"
       );
 
       tl.eventCallback("onComplete", () => {
@@ -185,6 +184,49 @@
       // Prevent recursive calls during splitting for this specific element
       if (processingElements.get(elementId)) return;
       processingElements.set(elementId, true);
+
+      const smile = document.querySelector(".code-embed-4") as HTMLElement;
+      const prefaceLoader = document.querySelector(
+        ".preface-loader"
+      ) as HTMLElement;
+      console.log(smile, prefaceLoader);
+      if (smile && prefaceLoader) {
+        const animatePrefaceOut = () => {
+          gsap.to(prefaceLoader, {
+            scaleY: 0,
+            transformOrigin: "top bottom",
+            duration: 1.06,
+            ease: "Power4.out",
+            onComplete: () => {
+              prefaceLoader.style.visibility = "hidden";
+            },
+          });
+        };
+
+        console.log(smile, prefaceLoader);
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (
+              mutation.type === "attributes" &&
+              mutation.attributeName === "style"
+            ) {
+              const opacity = parseFloat(smile.style.opacity || "1");
+              if (opacity === 1) {
+                animatePrefaceOut();
+              }
+            }
+          });
+        });
+
+        // Debug
+        //  setTimeout(() => {
+        //    animatePrefaceOut();
+        //  }, 1000);
+
+        observer.observe(smile, {
+          attributes: true, //configure it to listen to attribute changes
+        });
+      }
 
       // Find and revert any existing split instance for this element
       const splitInstance = splitInstances.find((instance) => {
