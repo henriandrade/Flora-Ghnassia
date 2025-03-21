@@ -338,6 +338,7 @@
           scaleY: 0,
           transformOrigin: "top bottom",
           duration: 0.8,
+          delay: 0.3,
           ease: "Power4.out",
           onStart: () => {
             initAnimations();
