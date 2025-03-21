@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import SplitType from "split-type";
   import gsap from "gsap";
+
+  let mediaQuery: MediaQueryList;
 
   const setupMenuItem = (menuLink: HTMLElement) => {
     // Split text into characters
@@ -102,16 +104,52 @@
       tl.timeScale(2);
       tl.reverse();
     });
+
+    return {
+      destroy: () => {
+        menuLink.removeEventListener("mouseenter", () => {
+          tl.timeScale(1);
+          tl.play();
+        });
+        menuLink.removeEventListener("mouseleave", () => {
+          tl.timeScale(2);
+          tl.reverse();
+        });
+        text.revert();
+      },
+    };
   };
 
   const init = () => {
-    const menuLink = document.querySelectorAll<HTMLElement>(".menu-link");
-    menuLink.forEach((menuLink) => {
-      setupMenuItem(menuLink);
-    });
+    let cleanupFunctions: { destroy: () => void }[] = [];
+    const menuLinks = document.querySelectorAll<HTMLElement>(".menu-link");
+
+    const applyAnimations = () => {
+      // Cleanup previous animations before applying new ones
+      cleanupFunctions.forEach((cleanup) => cleanup.destroy());
+      cleanupFunctions = [];
+
+      if (window.innerWidth > window.innerHeight) {
+        menuLinks.forEach((menuLink) => {
+          const cleanup = setupMenuItem(menuLink);
+          cleanupFunctions.push(cleanup);
+        });
+      }
+    };
+
+    applyAnimations(); // Initial application
+    window.addEventListener("resize", applyAnimations); // Re-apply on resize
+
+    return () => {
+      window.removeEventListener("resize", applyAnimations);
+      cleanupFunctions.forEach((cleanup) => cleanup.destroy());
+    };
   };
 
   onMount(() => {
-    init();
+    const cleanup = init();
+    onDestroy(() => {
+      cleanup && cleanup();
+    });
   });
 </script>
