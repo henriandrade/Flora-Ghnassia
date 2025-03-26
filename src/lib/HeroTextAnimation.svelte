@@ -220,6 +220,10 @@
           });
           splitInstances.push(splitText);
 
+          gsap.set(textElement, {
+            opacity: 1,
+          });
+
           // Add overflow hidden to each line element
           if (splitText.lines) {
             // Set overflow hidden on all line elements
