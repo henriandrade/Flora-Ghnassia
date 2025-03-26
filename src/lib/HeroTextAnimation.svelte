@@ -329,13 +329,13 @@
 
     const smile = document.querySelector(".code-embed-4") as HTMLElement;
     const prefaceLoader = document.querySelector(
-      ".preface-loader"
+      ".preface-loader-wrapper"
     ) as HTMLElement;
 
     if (smile && prefaceLoader) {
       const animatePrefaceOut = () => {
         gsap.to(prefaceLoader, {
-          scaleY: 0,
+          height: 0,
           transformOrigin: "top bottom",
           duration: 0.8,
           delay: 0.3,
