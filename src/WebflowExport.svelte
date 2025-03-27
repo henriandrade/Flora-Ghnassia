@@ -46,8 +46,8 @@
   <MenuAnimation />
   <WhatsNext />
   <CustomScrollbar />
-  <HandleHomeVideos />
-  {#if !import.meta.env.DEV && window.location.pathname === "/"}
+  {#if window.location.pathname === "/"}
+    <HandleHomeVideos />
     <HomeImagesParallaxEffect />
     <DrawingCanvas />
   {:else}
