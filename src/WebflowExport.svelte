@@ -9,8 +9,9 @@
   import gsap from "gsap";
   import ScrollTrigger from "gsap/ScrollTrigger";
   import WhatsNext from "@/lib/WhatsNext.svelte";
-  import HandleVideos from "@/lib/HandleVideos.svelte";
+  import HandleHomeVideos from "@/lib/HandleHomeVideos.svelte";
   import CustomScrollbar from "@/lib/CustomScrollbar.svelte";
+  import HandleVideos from "@/lib/HandleVideos.svelte";
 
   let webflowIsReady = false;
 
@@ -45,9 +46,11 @@
   <MenuAnimation />
   <WhatsNext />
   <CustomScrollbar />
-  {#if window.location.pathname === "/"}
+  <HandleHomeVideos />
+  {#if !import.meta.env.DEV && window.location.pathname === "/"}
     <HomeImagesParallaxEffect />
     <DrawingCanvas />
+  {:else}
     <HandleVideos />
   {/if}
 {/if}

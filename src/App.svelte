@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Webflow from "@public/webflow/index.html?raw";
+  import Webflow from "@/burner.html?raw";
   import WebflowExport from "@/WebflowExport.svelte";
 </script>
 
@@ -7,6 +7,3 @@
   {@html Webflow}
   <WebflowExport />
 </main>
-
-<style>
-</style>
